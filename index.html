@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Analytics + Session Replay (unified smart loader) -->
+<script src="https://cdn.amplitude.com/script/c4f6abd9bf3540b35420fd5018dab420.js"></script>
+<!-- Web Experiment — required for the visual editor to attach -->
+<script src="https://cdn.amplitude.com/script/c4f6abd9bf3540b35420fd5018dab420.experiment.js"></script>
+<!-- Guides & Surveys -->
+<script src="https://cdn.amplitude.com/script/c4f6abd9bf3540b35420fd5018dab420.engagement.js"></script>
+<script>
+  // Calculator experiment preview override (?calc_variant=treatment|control), applied before first paint.
+  // The live treatment is served by Web Experiment flag "calculator-item-search-improvement" (see README).
+  (function () { try {
+    var q = new URLSearchParams(location.search).get('calc_variant');
+    if (q) localStorage.setItem('bq_calc_variant', JSON.stringify(q));
+    if (JSON.parse(localStorage.getItem('bq_calc_variant') || 'null') === 'treatment') document.documentElement.classList.add('calc-improved');
+  } catch (e) {} })();
+  if (window.amplitude) {
+    if (window.sessionReplay) amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
+    if (window.engagement)    amplitude.add(window.engagement.plugin());
+    amplitude.init("c4f6abd9bf3540b35420fd5018dab420", { fetchRemoteConfig: true, autocapture: true });
+  }
+</script>
+<title>DIY Products at Everyday Low Prices at B&amp;Q</title>
+<meta name="description" content="DIY products at everyday low prices. Amplitude demo build.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="./assets/css/app.css">
+</head>
+<body data-page="home">
+<div id="site-header"></div>
+<main>
+<section class="find"><div class="wrap"><h2>Find what you need</h2><div class="chips" id="chips"></div></div></section>
+<div class="wrap" style="padding-top:24px">
+  <section class="hero" aria-label="Black Friday">
+    <div class="copy">
+      <span class="stamp">Black</span><span class="stamp">Friday</span>
+      <p>Brilliant low prices online and in store</p>
+      <a class="btn btn-promo" href="category.html?c=offers" style="align-self:flex-start">Shop all Black Friday deals</a>
+    </div>
+    <div class="art" aria-hidden="true"></div>
+  </section>
+  <section class="section" id="project-calculator">
+    <div class="calc-promo">
+      <div class="left">
+        <span class="tag-new">New</span>
+        <h2 style="margin-top:10px">Project Calculator</h2>
+        <p>Work out exactly how much paint, flooring, tiles, wallpaper or decking you need. Pop in your room sizes and we'll do the maths.</p>
+        <p class="muted small">From small updates to big transformations, if they can do it, now you can too.</p>
+        <a class="btn btn-dark" href="product.html?id=ITEM_001#calc">Try it on paint</a>
+      </div>
+      <div class="right" id="calcTiles"></div>
+    </div>
+  </section>
+  <section class="section"><div class="section-head"><h2>Prices. Nailed.</h2><span class="small muted">We've nailed down prices on hundreds of indoor and outdoor essentials</span></div><div class="offer-grid" id="offers"></div></section>
+  <section class="section"><div class="section-head"><h2>Recommended for you</h2><a href="category.html?c=offers" class="small">See all offers</a></div><div class="grid" id="recs"></div></section>
+</div>
+</main>
+<div id="site-footer"></div>
+<script src="./assets/js/catalogue.js"></script>
+<script src="./assets/js/app.js"></script>
+</body>
+</html>
