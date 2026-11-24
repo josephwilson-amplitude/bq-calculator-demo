@@ -977,13 +977,14 @@
   };
 
   /* ============================================================
-     Store stock checker (stores.html): the deliberately broken part of the site.
-     Every check produces errors for Session Replay error analytics:
+     Store stock checker (stores.html).
+     To the shopper it works: they see stock levels per store and can collect.
+     Behind the scenes every check silently produces errors for Session Replay error analytics:
        1. GET api/store-stock/v3/availability.json -> 404 (no such file on the static host)
        2. console.error('[StockService] ...')
        3. fallback GET to a host that can never resolve (.invalid) -> request fails, status 0
-       4. uncaught TypeError while rendering the missing response
-     The shopper sees a generic error and a "Try again" button that fails the same way.
+       4. uncaught TypeError while merging the (missing) live response
+     The page quietly falls back to a cached stock snapshot, so nothing looks wrong on screen.
      ============================================================ */
   pages.stores = function () {
     var p = byId(qs('id'));
@@ -992,24 +993,35 @@
       $('#stockFor').innerHTML = '<div class="stock-product"><div class="thumb" aria-hidden="true">' + art(p) + '</div><div><div class="small muted">Checking stock for</div>' +
         '<b>' + esc(p.name) + '</b><div class="price-sm">' + money(p.price) + '</div></div></div>';
     }
+    function storeName(st) { return st.split(' (')[0]; }
+    function storeDist(st) { return (st.match(/\(([^)]+)\)/) || [])[1] || ''; }
     $('#storeList').innerHTML = STORES.map(function (st) {
-      return '<li><b>' + esc(st.split(' (')[0]) + '</b><span class="muted small">' + esc((st.match(/\(([^)]+)\)/) || [])[1] || '') + ' · Open today 7am – 8pm</span></li>';
+      return '<li><b>' + esc(storeName(st)) + '</b><span class="muted small">' + esc(storeDist(st)) + ' · Open today 7am – 8pm</span></li>';
     }).join('');
 
-    function renderStores(stores) {
-      // BUG (intentional): called with undefined when the stock service fails
-      $('#storeList').innerHTML = stores.map(function (st) { return '<li>' + esc(st.name) + ': ' + st.qty + ' in stock</li>'; }).join('');
+    // Cached stock snapshot: deterministic per product + postcode + store, so results look stable and real.
+    function cachedQty(pc, i) {
+      var h = 0, k = sku + '|' + pc + '|' + i;
+      for (var c = 0; c < k.length; c++) h = (h * 31 + k.charCodeAt(c)) >>> 0;
+      var q = h % 23;
+      return q < 3 ? 0 : q;
     }
-    function showError() {
-      $('#stockResult').innerHTML = '<div class="stock-error" role="alert"><b>Sorry, we can\'t check store stock right now.</b>' +
-        '<p>Something went wrong on our side. Please try again in a few minutes.</p><div class="stock-actions">' +
-        '<button class="btn btn-dark btn-sm" type="button" data-retry>Try again</button>' +
-        (p ? '<a class="btn btn-buy btn-sm" href="product.html?id=' + p.id + '">Get it delivered instead</a>' : '') + '</div></div>';
+    function renderResults(pc) {
+      $('#stockResult').innerHTML = '<div class="panel stock-results"><h2 style="font-size:18px;margin-bottom:4px">Stock near ' + esc(pc.toUpperCase()) + '</h2>' +
+        '<p class="small muted" style="margin-top:0">Updated a few minutes ago</p><ul class="store-list">' + STORES.map(function (st, i) {
+          var q = cachedQty(pc, i);
+          var lvl = q === 0 ? '<span class="stock-out">Out of stock</span>' : q < 6 ? '<span class="stock-low">Low stock: ' + q + ' left</span>' : '<span class="stock-in">' + q + ' in stock</span>';
+          return '<li class="stock-store"><div><b>' + esc(storeName(st)) + '</b><span class="muted small">' + esc(storeDist(st)) + ' · Ready in as little as 15 minutes</span>' + lvl + '</div>' +
+            (p && q > 0 ? '<button class="btn btn-buy btn-sm" type="button" data-collect="' + i + '">Collect from here</button>' : '') + '</li>';
+        }).join('') + '</ul></div>';
     }
-    function checkStock() {
-      var pc = $('#postcode').value.trim();
-      if (!pc) { $('#postcode').focus(); return; }
-      $('#stockResult').innerHTML = '<div class="panel stock-loading"><span class="spinner" aria-hidden="true"></span> Checking stores near ' + esc(pc.toUpperCase()) + '…</div>';
+
+    // Silent background failure: none of this reaches the UI.
+    function mergeLiveStock(live) {
+      // BUG (intentional): live is undefined when the stock service fails
+      return live.stores.map(function (st) { return { name: st.name, qty: st.qty }; });
+    }
+    function syncLiveStock() {
       fetch('api/store-stock/v3/availability.json?sku=' + encodeURIComponent(sku) + '&radius=10', { headers: { Accept: 'application/json' } })
         .then(function (r) {
           if (!r.ok) {
@@ -1026,13 +1038,25 @@
           console.error('[StockService] Legacy stock API unreachable: ' + (err && err.message), { sku: sku });
           return undefined;
         })
-        .then(function (data) {
-          showError();
-          setTimeout(function () { renderStores(data.stores); }, 0); // throws: Cannot read properties of undefined (reading 'stores')
+        .then(function (live) {
+          setTimeout(function () { mergeLiveStock(live); }, 0); // throws: Cannot read properties of undefined (reading 'stores')
         });
     }
+
+    function checkStock() {
+      var pc = $('#postcode').value.trim();
+      if (!pc) { $('#postcode').focus(); return; }
+      $('#stockResult').innerHTML = '<div class="panel stock-loading"><span class="spinner" aria-hidden="true"></span> Checking stores near ' + esc(pc.toUpperCase()) + '…</div>';
+      syncLiveStock();
+      setTimeout(function () { renderResults(pc); }, 700);
+    }
     $('#stockForm').addEventListener('submit', function (e) { e.preventDefault(); checkStock(); });
-    $('#stockResult').addEventListener('click', function (e) { if (e.target.closest('[data-retry]')) checkStock(); });
+    $('#stockResult').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-collect]'); if (!b || !p) return;
+      LS.set('bq_fulfil', 'collect');
+      addToBasket(p.id, 1, 'store_stock');
+      showAdded(p, 1);
+    });
   };
 
   pages.notfound = function () {};

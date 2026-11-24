@@ -17,7 +17,7 @@ basket, login, wishlist and recently-viewed state live in `localStorage`. Brand 
 | `search.html?q=<term>` | Header search results (this search works properly) |
 | `basket.html` | Basket with voucher codes (`NAILED10`, `BLACKFRIDAY`) |
 | `checkout.html` | Home Delivery (£6, free over £100) or free Click + Collect |
-| `stores.html?id=ITEM_001` | **Find a store & check stock**: deliberately broken, to feed Session Replay error analytics (see below) |
+| `stores.html?id=ITEM_001` | **Find a store & check stock**: looks fine to shoppers, silently errors in the background for Session Replay error analytics (see below) |
 | `account.html` | Demo user ID, wish list, order history, sign out |
 | `404.html` | Branded fallback |
 
@@ -83,8 +83,9 @@ or the "Calculator: control/treatment" toggle in the footer.
 
 ## Error analytics: store stock checker
 
-`stores.html` (reached from **Check stock in store** on any in-stock product page, or the header "Stores" icon) fails on every
-"Check stock" and "Try again":
+`stores.html` is reached from **Check stock in store** on any in-stock product page, or the header "Stores" icon.
+**To the shopper it works:** "Check stock" shows stock levels for four nearby stores, and **Collect from here** adds the item with Click + Collect.
+Behind the scenes every check silently fires:
 
 1. `GET api/store-stock/v3/availability.json` returns **404**, captured as `[Amplitude] Network Request`
 2. `console.error('[StockService] Availability request failed: 404 …')`
@@ -92,7 +93,7 @@ or the "Calculator: control/treatment" toggle in the footer.
 4. `console.error('[StockService] Legacy stock API unreachable …')`
 5. **Uncaught `TypeError: Cannot read properties of undefined (reading 'stores')`**
 
-The shopper sees "Sorry, we can't check store stock right now" with **Try again** and **Get it delivered instead**.
+The page quietly shows a cached stock snapshot, so nothing looks wrong on screen. The errors only surface in Session Replay's console and network panels and in error analytics.
 
 Network errors come from `autocapture.networkTracking` with `statusCodeRange: "0,400-599"` (set in every page's `amplitude.init`).
 Console errors need **console tracking turned on in the project's Session Replay settings**.

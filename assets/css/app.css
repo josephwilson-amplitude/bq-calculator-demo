@@ -383,3 +383,9 @@ main { min-height: 50vh; }
 .store-list { list-style: none; margin: 0; padding: 0; }
 .store-list li { padding: 10px 0; border-bottom: 1px solid var(--surface); display: flex; flex-direction: column; gap: 2px; }
 @media (max-width: 860px) { .stock-layout { grid-template-columns: 1fr; } }
+.stock-results { margin-top: 14px; }
+.stock-store { flex-direction: row !important; justify-content: space-between; align-items: center; gap: 12px; }
+.stock-store > div { display: flex; flex-direction: column; gap: 2px; }
+.stock-in { color: var(--green); font-weight: 700; font-size: 14px; }
+.stock-low { color: #B25E00; font-weight: 700; font-size: 14px; }
+.stock-out { color: var(--red); font-weight: 700; font-size: 14px; }
