@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Analytics + Session Replay (unified smart loader) -->
+<script src="https://cdn.amplitude.com/script/c4f6abd9bf3540b35420fd5018dab420.js"></script>
+<!-- Web Experiment — required for the visual editor to attach -->
+<script src="https://cdn.amplitude.com/script/c4f6abd9bf3540b35420fd5018dab420.experiment.js"></script>
+<!-- Guides & Surveys -->
+<script src="https://cdn.amplitude.com/script/c4f6abd9bf3540b35420fd5018dab420.engagement.js"></script>
+<script>
+  // Calculator experiment preview override (?calc_variant=treatment|control), applied before first paint.
+  // The live treatment is served by Web Experiment flag "calculator-item-search-improvement" (see README).
+  (function () { try {
+    var q = new URLSearchParams(location.search).get('calc_variant');
+    if (q) localStorage.setItem('bq_calc_variant', JSON.stringify(q));
+    if (JSON.parse(localStorage.getItem('bq_calc_variant') || 'null') === 'treatment') document.documentElement.classList.add('calc-improved');
+  } catch (e) {} })();
+  if (window.amplitude) {
+    if (window.sessionReplay) amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
+    if (window.engagement)    amplitude.add(window.engagement.plugin());
+    amplitude.init("c4f6abd9bf3540b35420fd5018dab420", {
+      fetchRemoteConfig: true,
+      autocapture: {
+        attribution: true, pageViews: true, sessions: true, formInteractions: true, fileDownloads: true,
+        elementInteractions: true, frustrationInteractions: true,
+        // Failed API calls (4xx/5xx) and requests with no response (0) feed Session Replay error analytics
+        networkTracking: { captureRules: [{ statusCodeRange: "0,400-599" }] }
+      }
+    });
+  }
+</script>
+<title>Find a store &amp; check stock | DIY at B&amp;Q</title>
+<meta name="description" content="DIY products at everyday low prices. Amplitude demo build.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="./assets/css/app.css">
+</head>
+<body data-page="stores">
+<div id="site-header"></div>
+<main class="wrap">
+<div class="crumbs"><a href="index.html">Home</a> / Stores / Check stock</div>
+<h1>Find a store &amp; check stock</h1>
+<p class="muted">See what's in stock at your local B&amp;Q, ready for Click + Collect in as little as 15 minutes.</p>
+<div class="stock-layout">
+  <section>
+    <div id="stockFor"></div>
+    <form id="stockForm" class="panel" novalidate>
+      <div class="field"><label for="postcode">Enter your postcode</label>
+        <div class="stock-row"><input id="postcode" autocomplete="postal-code" placeholder="e.g. SW18 1AA" enterkeyhint="search">
+        <button class="btn btn-orange" type="submit">Check stock</button></div></div>
+    </form>
+    <div id="stockResult" aria-live="polite"></div>
+  </section>
+  <aside class="panel">
+    <h2 style="font-size:18px">Your nearest stores</h2>
+    <ul class="store-list" id="storeList"></ul>
+  </aside>
+</div>
+</main>
+<div id="site-footer"></div>
+<script src="./assets/js/catalogue.js"></script>
+<script src="./assets/js/app.js"></script>
+</body>
+</html>

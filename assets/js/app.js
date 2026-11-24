@@ -457,7 +457,7 @@
           '<nav class="icons" aria-label="Shortcuts">' +
             '<a href="calculator.html" class="hide-sm">' + ICON.ideas + '<span>Project Calculator</span></a>' +
             '<a href="404.html" class="hide-md">' + ICON.services + '<span>Services</span></a>' +
-            '<a href="404.html" class="hide-md">' + ICON.stores + '<span>Stores</span></a>' +
+            '<a href="stores.html" class="hide-md">' + ICON.stores + '<span>Stores</span></a>' +
             '<a href="account.html">' + ICON.account + '<span>' + (u ? 'Account' : 'Sign in') + '</span></a>' +
             '<a href="basket.html">' + ICON.basket + '<span>Basket</span><b class="badge-count" id="basketCount" hidden>0</b></a>' +
           '</nav>' +
@@ -786,6 +786,7 @@
           (p.viewed ? '<div class="viewed">' + p.viewed + ' people viewed this product in the last 24 hours.</div>' : '') +
           (p.wasPrice ? '<div class="offer-pill"><span class="pill pill-red">Save ' + money(p.wasPrice - p.price) + '</span><span><b>Prices. Nailed.</b></span><button class="link" type="button" id="offerBtn" style="margin-left:auto">See offer details</button></div>' : '') +
           '<div class="fulfil"><div><b>Home Delivery</b>' + (p.stock ? '£6, free for orders over £100' : '<span style="color:#D92910">Out of stock</span>') + '</div><div><b>Click + Collect</b>' + (p.stock ? 'Free. Ready in as little as 15 minutes' : 'Unavailable') + '</div></div>' +
+          (p.stock ? '<p class="small" style="margin:-6px 0 14px"><a href="stores.html?id=' + p.id + '">Check stock in store</a></p>' : '') +
           '<div class="buyrow"><div class="qty"><button type="button" data-q="-1" aria-label="Decrease quantity">−</button><input id="qty" type="number" min="1" value="1" inputmode="numeric" aria-label="Quantity"><button type="button" data-q="1" aria-label="Increase quantity">+</button></div>' +
             '<button class="btn btn-buy" type="button" id="addBtn"' + (p.stock ? '' : ' disabled') + '>' + (p.stock ? 'Add to basket' : 'Out of stock') + '</button>' +
             '<button class="wish-inline' + (inWish ? ' on' : '') + '" type="button" id="wishBtn" aria-label="Add to wish list">' + HEART + '</button></div>' +
@@ -973,6 +974,65 @@
     }).join('');
     $('#calcTypes').addEventListener('click', function (e) { var b = e.target.closest('[data-type]'); if (b && b.getAttribute('data-type') !== type) select(b.getAttribute('data-type')); });
     select(type);
+  };
+
+  /* ============================================================
+     Store stock checker (stores.html): the deliberately broken part of the site.
+     Every check produces errors for Session Replay error analytics:
+       1. GET api/store-stock/v3/availability.json -> 404 (no such file on the static host)
+       2. console.error('[StockService] ...')
+       3. fallback GET to a host that can never resolve (.invalid) -> request fails, status 0
+       4. uncaught TypeError while rendering the missing response
+     The shopper sees a generic error and a "Try again" button that fails the same way.
+     ============================================================ */
+  pages.stores = function () {
+    var p = byId(qs('id'));
+    var sku = p ? p.id : 'ALL';
+    if (p) {
+      $('#stockFor').innerHTML = '<div class="stock-product"><div class="thumb" aria-hidden="true">' + art(p) + '</div><div><div class="small muted">Checking stock for</div>' +
+        '<b>' + esc(p.name) + '</b><div class="price-sm">' + money(p.price) + '</div></div></div>';
+    }
+    $('#storeList').innerHTML = STORES.map(function (st) {
+      return '<li><b>' + esc(st.split(' (')[0]) + '</b><span class="muted small">' + esc((st.match(/\(([^)]+)\)/) || [])[1] || '') + ' · Open today 7am – 8pm</span></li>';
+    }).join('');
+
+    function renderStores(stores) {
+      // BUG (intentional): called with undefined when the stock service fails
+      $('#storeList').innerHTML = stores.map(function (st) { return '<li>' + esc(st.name) + ': ' + st.qty + ' in stock</li>'; }).join('');
+    }
+    function showError() {
+      $('#stockResult').innerHTML = '<div class="stock-error" role="alert"><b>Sorry, we can\'t check store stock right now.</b>' +
+        '<p>Something went wrong on our side. Please try again in a few minutes.</p><div class="stock-actions">' +
+        '<button class="btn btn-dark btn-sm" type="button" data-retry>Try again</button>' +
+        (p ? '<a class="btn btn-buy btn-sm" href="product.html?id=' + p.id + '">Get it delivered instead</a>' : '') + '</div></div>';
+    }
+    function checkStock() {
+      var pc = $('#postcode').value.trim();
+      if (!pc) { $('#postcode').focus(); return; }
+      $('#stockResult').innerHTML = '<div class="panel stock-loading"><span class="spinner" aria-hidden="true"></span> Checking stores near ' + esc(pc.toUpperCase()) + '…</div>';
+      fetch('api/store-stock/v3/availability.json?sku=' + encodeURIComponent(sku) + '&radius=10', { headers: { Accept: 'application/json' } })
+        .then(function (r) {
+          if (!r.ok) {
+            console.error('[StockService] Availability request failed: ' + r.status + ' ' + (r.statusText || 'Not Found'), { sku: sku, endpoint: 'store-stock/v3/availability' });
+            throw new Error('HTTP ' + r.status);
+          }
+          return r.json();
+        })
+        .catch(function () {
+          console.warn('[StockService] Falling back to legacy stock API');
+          return fetch('https://stock-legacy.diy-demo.invalid/v1/stock?sku=' + encodeURIComponent(sku)).then(function (r) { return r.json(); });
+        })
+        .catch(function (err) {
+          console.error('[StockService] Legacy stock API unreachable: ' + (err && err.message), { sku: sku });
+          return undefined;
+        })
+        .then(function (data) {
+          showError();
+          setTimeout(function () { renderStores(data.stores); }, 0); // throws: Cannot read properties of undefined (reading 'stores')
+        });
+    }
+    $('#stockForm').addEventListener('submit', function (e) { e.preventDefault(); checkStock(); });
+    $('#stockResult').addEventListener('click', function (e) { if (e.target.closest('[data-retry]')) checkStock(); });
   };
 
   pages.notfound = function () {};

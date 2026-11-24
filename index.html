@@ -20,7 +20,15 @@
   if (window.amplitude) {
     if (window.sessionReplay) amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
     if (window.engagement)    amplitude.add(window.engagement.plugin());
-    amplitude.init("c4f6abd9bf3540b35420fd5018dab420", { fetchRemoteConfig: true, autocapture: true });
+    amplitude.init("c4f6abd9bf3540b35420fd5018dab420", {
+      fetchRemoteConfig: true,
+      autocapture: {
+        attribution: true, pageViews: true, sessions: true, formInteractions: true, fileDownloads: true,
+        elementInteractions: true, frustrationInteractions: true,
+        // Failed API calls (4xx/5xx) and requests with no response (0) feed Session Replay error analytics
+        networkTracking: { captureRules: [{ statusCodeRange: "0,400-599" }] }
+      }
+    });
   }
 </script>
 <title>DIY Products at Everyday Low Prices at B&amp;Q</title>

@@ -1,0 +1,307 @@
+/* =====================================================================
+   B&Q demo: Amplitude Guides & Surveys custom CSS
+   Matches assets/css/app.css (palette captured from diy.com, see brand.md)
+   Paste into: Guides and Surveys > Themes > (your theme) > Custom CSS
+   Uses only the documented .amplitude-engagement-* selectors.
+   ===================================================================== */
+
+/* Figtree is already loaded by the demo site. This import is a fallback
+   and is ignored harmlessly if the editor doesn't allow @import. */
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&display=swap");
+
+/* ---------- Base: font, colour, square corners ---------- */
+.amplitude-engagement-banner-container,
+.amplitude-engagement-card-container,
+.amplitude-engagement-modal-container,
+.amplitude-engagement-popover-container,
+.amplitude-engagement-tooltip-content,
+.amplitude-engagement-pin-content,
+.amplitude-engagement-checklist {
+  font-family: "Figtree", "Inter", Arial, sans-serif !important;
+  color: #323C41 !important;
+  border-radius: 0 !important;
+  line-height: 1.45 !important;
+}
+
+/* Panels: white, grey hairline border, soft shadow (like the site modal) */
+.amplitude-engagement-modal-container,
+.amplitude-engagement-popover-container,
+.amplitude-engagement-card-container,
+.amplitude-engagement-card,
+.amplitude-engagement-pin-content,
+.amplitude-engagement-checklist {
+  background: #FFFFFF !important;
+  border: 1px solid #D6D8D9 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .2) !important;
+}
+
+/* Orange brand rule across the top of modals and popovers */
+.amplitude-engagement-modal-container,
+.amplitude-engagement-popover-container {
+  border-top: 4px solid #FA6400 !important;
+}
+
+/* Modal backdrop: same charcoal tint as the site's .modal-back */
+[data-amplitude-engagement-modal-overlay] {
+  background-color: rgba(20, 25, 28, .6) !important;
+}
+
+/* ---------- Typography ---------- */
+.amplitude-engagement-title,
+.amplitude-engagement-checklist-title {
+  font-family: "Figtree", "Inter", Arial, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 20px !important;
+  line-height: 1.15 !important;
+  color: #323C41 !important;
+}
+
+.amplitude-engagement-content,
+.amplitude-engagement-card-content,
+.amplitude-engagement-checklist-item-content {
+  font-size: 15px !important;
+  color: #323C41 !important;
+}
+
+.amplitude-engagement-content a,
+.amplitude-engagement-card-content a {
+  color: #323C41 !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+}
+
+.amplitude-engagement-checklist-subtitle {
+  font-size: 13px !important;
+  color: #676E72 !important;
+}
+
+.amplitude-engagement-image,
+.amplitude-engagement-video {
+  border-radius: 0 !important;
+}
+
+/* ---------- Buttons: square, bold, solid fill ---------- */
+.amplitude-engagement-cta-button,
+.amplitude-engagement-checklist-item-button__primary,
+.amplitude-engagement-checklist-item-button__secondary {
+  font-family: "Figtree", "Inter", Arial, sans-serif !important;
+  border-radius: 0 !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  min-height: 48px !important;
+  padding: 12px 28px !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transition: background .15s, color .15s !important;
+}
+
+/* Primary = "Add to basket" green */
+.amplitude-engagement-cta-button__primary,
+.amplitude-engagement-checklist-item-button__primary {
+  background: #098638 !important;
+  border: 0 !important;
+  color: #FFFFFF !important;
+}
+.amplitude-engagement-cta-button__primary:hover,
+.amplitude-engagement-checklist-item-button__primary:hover {
+  background: #076B2C !important;
+}
+
+/* Secondary = charcoal outline (site .btn-outline) */
+.amplitude-engagement-cta-button__secondary,
+.amplitude-engagement-checklist-item-button__secondary {
+  background: #FFFFFF !important;
+  border: 0 !important;
+  color: #323C41 !important;
+  box-shadow: inset 0 0 0 2px #323C41 !important;
+}
+.amplitude-engagement-cta-button__secondary:hover,
+.amplitude-engagement-checklist-item-button__secondary:hover {
+  background: #EFF0F0 !important;
+}
+
+.amplitude-engagement-cta-button:focus-visible {
+  outline: 3px solid #8FC3FF !important;
+  outline-offset: 0 !important;
+}
+
+/* Footer divider above the actions */
+.amplitude-engagement-actions-bar-container {
+  border-top: 1px solid #D6D8D9 !important;
+}
+
+/* Close buttons */
+.amplitude-engagement-close,
+.amplitude-engagement-banner-close-button,
+.amplitude-engagement-checklist-close-button {
+  color: #323C41 !important;
+  border-radius: 0 !important;
+}
+.amplitude-engagement-close:hover,
+.amplitude-engagement-banner-close-button:hover,
+.amplitude-engagement-checklist-close-button:hover {
+  opacity: .7 !important;
+}
+
+/* ---------- Banner: yellow promo strip ---------- */
+.amplitude-engagement-banner-container {
+  background: #FFE500 !important;
+  color: #323C41 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.amplitude-engagement-banner-title {
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  color: #323C41 !important;
+}
+.amplitude-engagement-banner-content {
+  font-size: 16px !important;
+  color: #323C41 !important;
+}
+.amplitude-engagement-banner-content a {
+  color: #323C41 !important;
+  text-decoration: underline !important;
+}
+/* Banner buttons are charcoal so they stand out on yellow */
+.amplitude-engagement-banner-actions .amplitude-engagement-cta-button__primary {
+  background: #323C41 !important;
+  color: #FFFFFF !important;
+}
+.amplitude-engagement-banner-actions .amplitude-engagement-cta-button__primary:hover {
+  background: #20282C !important;
+}
+.amplitude-engagement-banner-actions .amplitude-engagement-cta-button {
+  min-height: 40px !important;
+  padding: 8px 14px !important;
+  font-size: 14px !important;
+}
+
+/* ---------- Tooltip: dark charcoal, like the site toast ---------- */
+.amplitude-engagement-tooltip-content {
+  background: #323C41 !important;
+  color: #FFFFFF !important;
+  border: 0 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .2) !important;
+  font-weight: 600 !important;
+}
+.amplitude-engagement-tooltip-content .amplitude-engagement-title,
+.amplitude-engagement-tooltip-content .amplitude-engagement-content {
+  color: #FFFFFF !important;
+}
+
+/* Markers and beacons in B&Q orange */
+.amplitude-engagement-beacon,
+.amplitude-engagement-pin-beacon,
+.amplitude-engagement-tooltip-marker__beacon,
+.amplitude-engagement-tooltip-marker__icon {
+  background-color: #FA6400 !important;
+  color: #FA6400 !important;
+}
+
+/* ---------- Pins ---------- */
+.amplitude-engagement-pin-arrow {
+  color: #FFFFFF !important;
+  fill: #FFFFFF !important;
+}
+.amplitude-engagement-pin-mask {
+  background-color: rgba(20, 25, 28, .6) !important;
+}
+
+/* ---------- Checklist ---------- */
+.amplitude-engagement-checklist-header {
+  background: #323C41 !important;
+  color: #FFFFFF !important;
+  border-radius: 0 !important;
+}
+.amplitude-engagement-checklist-header .amplitude-engagement-checklist-title,
+.amplitude-engagement-checklist-header .amplitude-engagement-checklist-subtitle,
+.amplitude-engagement-checklist-header .amplitude-engagement-checklist-close-button {
+  color: #FFFFFF !important;
+}
+.amplitude-engagement-checklist-progress {
+  background-color: #EFF0F0 !important;
+  border-radius: 0 !important;
+  accent-color: #FA6400 !important;
+}
+.amplitude-engagement-checklist-item-header__expanded,
+.amplitude-engagement-checklist-item-header__collapsed {
+  font-weight: 700 !important;
+  border-bottom: 1px solid #D6D8D9 !important;
+}
+.amplitude-engagement-checklist-item-header__expanded {
+  background: #EFF0F0 !important;
+}
+
+/* ---------- Surveys ---------- */
+.amplitude-engagement-survey-prompt {
+  font-weight: 700 !important;
+  font-size: 17px !important;
+  color: #323C41 !important;
+}
+
+/* Text inputs and selects: square, grey border, blue focus ring */
+.amplitude-engagement-input,
+.amplitude-engagement-text-input,
+.amplitude-engagement-short-text-input,
+.amplitude-engagement-select,
+.amplitude-engagement-select-input,
+.amplitude-engagement-list-dropdown {
+  font-family: "Figtree", "Inter", Arial, sans-serif !important;
+  font-size: 16px !important;
+  border: 1px solid #8A9092 !important;
+  border-radius: 0 !important;
+  background: #FFFFFF !important;
+  color: #323C41 !important;
+}
+.amplitude-engagement-input:focus,
+.amplitude-engagement-text-input:focus,
+.amplitude-engagement-short-text-input:focus,
+.amplitude-engagement-select-input:focus {
+  outline: 3px solid #8FC3FF !important;
+  outline-offset: 0 !important;
+  border-color: #323C41 !important;
+}
+
+/* Radio and checkbox options: bordered tiles like checkout .choice */
+.amplitude-engagement-checkbox-option,
+.amplitude-engagement-radio-option {
+  border: 1px solid #D6D8D9 !important;
+  border-radius: 0 !important;
+  background: #FFFFFF !important;
+  accent-color: #098638 !important;
+  font-size: 15px !important;
+}
+.amplitude-engagement-checkbox-option:hover,
+.amplitude-engagement-radio-option:hover {
+  border-color: #323C41 !important;
+}
+.amplitude-engagement-checkbox-option:has(input:checked),
+.amplitude-engagement-radio-option:has(input:checked) {
+  border: 2px solid #323C41 !important;
+  background: #FAFAFA !important;
+}
+
+/* Ratings: square number tiles, orange stars */
+.amplitude-engagement-rating__numbers button {
+  border-radius: 0 !important;
+  border: 1px solid #D6D8D9 !important;
+  font-weight: 700 !important;
+}
+.amplitude-engagement-rating__numbers button:hover {
+  background: #323C41 !important;
+  color: #FFFFFF !important;
+  border-color: #323C41 !important;
+}
+.amplitude-engagement-rating__stars {
+  color: #FA6400 !important;
+}
+.amplitude-engagement-rating__stars svg {
+  color: #FA6400 !important;
+}
+.amplitude-engagement-rating-label,
+.amplitude-engagement-rating-label-start,
+.amplitude-engagement-rating-label-end {
+  font-size: 13px !important;
+  color: #676E72 !important;
+}
