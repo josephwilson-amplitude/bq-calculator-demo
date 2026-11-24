@@ -683,7 +683,7 @@
       modal(o.title, '<p>' + esc(o.blurb) + '</p>' + (o.code ? '<p>Use code <span class="idbox" style="display:inline-block;padding:4px 10px">' + o.code + '</span> in your basket.</p>' : '') +
         '<p class="small muted">Offer type: ' + o.offer_type.replace('_', ' ') + (o.offer_pct ? ' · ' + Math.round(o.offer_pct * 100) + '% off' : '') + '</p><a class="btn btn-orange" href="' + o.link + '">Shop the offer</a>');
     });
-    $('#calcTiles').innerHTML = CALC_DEFS.map(function (c) { return '<a href="calculator.html?type=' + c.type + '"><div class="tile">' + art(byId(c.def)) + '</div>' + esc(c.label) + '</a>'; }).join('');
+    $('#calcTiles').innerHTML = CALC_DEFS.map(function (c) { return '<a href="calculator.html?type=' + c.type + '"><div class="tile" aria-hidden="true">' + art(byId(c.def)) + '</div>' + esc(c.label) + '</a>'; }).join('');
     var recent = recentlyViewed().slice(0, 4);
     if (recent.length) {
       $('#recentSec').hidden = false;
@@ -969,7 +969,7 @@
       try { history.replaceState(null, '', 'calculator.html?type=' + t); } catch (e) {}
     }
     $('#calcTypes').innerHTML = CALC_DEFS.map(function (c) {
-      return '<button type="button" class="calc-type" data-type="' + c.type + '" aria-pressed="false"><span class="tile">' + art(byId(c.def)) + '</span>' + esc(c.label) + '</button>';
+      return '<button type="button" class="calc-type" data-type="' + c.type + '" aria-pressed="false"><span class="tile" aria-hidden="true">' + art(byId(c.def)) + '</span>' + esc(c.label) + '</button>';
     }).join('');
     $('#calcTypes').addEventListener('click', function (e) { var b = e.target.closest('[data-type]'); if (b && b.getAttribute('data-type') !== type) select(b.getAttribute('data-type')); });
     select(type);
