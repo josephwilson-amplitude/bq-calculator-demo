@@ -40,10 +40,10 @@ window.BQ_PRODUCTS = [
   { id: 'ITEM_014', name: 'GoodHome Elymus Green Leaves Textured Wallpaper, double roll', brand: 'GoodHome', dept: 'painting-decorating', type: 'wallpaper', price: 38.00, pack: 2, packLabel: '2 rolls', colour: '#5F7F5B', rating: 4.5, reviews: 9, stock: 0, calcPick: 'ITEM_011' },
 
   // ---------- Decorating tools ----------
-  { id: 'ITEM_015', name: 'Diall 9" Medium pile Roller & tray set', brand: 'Diall', dept: 'painting-decorating', type: 'tool', price: 8.00, colour: '#FA6400', rating: 4.4, reviews: 410, stock: 99 },
-  { id: 'ITEM_016', name: 'Diall Synthetic Paint brush set, Pack of 5', brand: 'Diall', dept: 'painting-decorating', type: 'tool', price: 7.00, colour: '#323C41', rating: 4.2, reviews: 233, stock: 99 },
-  { id: 'ITEM_017', name: 'Diall Low tack Masking tape (L)50m (W)25mm', brand: 'Diall', dept: 'painting-decorating', type: 'tool', price: 4.50, colour: '#E9D8A6', rating: 4.3, reviews: 156, stock: 99 },
-  { id: 'ITEM_018', name: 'Diall Polythene Dust sheet (L)3.6m (W)2.7m', brand: 'Diall', dept: 'painting-decorating', type: 'tool', price: 3.00, colour: '#BFD6E6', rating: 4.1, reviews: 98, stock: 99 },
+  { id: 'ITEM_015', shape: 'roller', name: 'Diall 9" Medium pile Roller & tray set', brand: 'Diall', dept: 'painting-decorating', type: 'tool', price: 8.00, colour: '#FA6400', rating: 4.4, reviews: 410, stock: 99 },
+  { id: 'ITEM_016', shape: 'brush', name: 'Diall Synthetic Paint brush set, Pack of 5', brand: 'Diall', dept: 'painting-decorating', type: 'tool', price: 7.00, colour: '#323C41', rating: 4.2, reviews: 233, stock: 99 },
+  { id: 'ITEM_017', shape: 'tape', name: 'Diall Low tack Masking tape (L)50m (W)25mm', brand: 'Diall', dept: 'painting-decorating', type: 'tool', price: 4.50, colour: '#E9D8A6', rating: 4.3, reviews: 156, stock: 99 },
+  { id: 'ITEM_018', shape: 'sheet', name: 'Diall Polythene Dust sheet (L)3.6m (W)2.7m', brand: 'Diall', dept: 'painting-decorating', type: 'tool', price: 3.00, colour: '#BFD6E6', rating: 4.1, reviews: 98, stock: 99 },
 
   // ---------- Flooring ----------
   { id: 'ITEM_020', name: 'GoodHome Ostrava Natural Oak effect Laminate Flooring, 2.13m² Pack', brand: 'GoodHome', dept: 'tiling-flooring', type: 'flooring', price: 29.97, pack: 2.13, packLabel: '2.13m² pack', colour: '#C49A6C', rating: 4.5, reviews: 188, stock: 60, calcPick: 'ITEM_020', viewed: 51 },
@@ -57,7 +57,7 @@ window.BQ_PRODUCTS = [
   { id: 'ITEM_031', name: 'Cimenti Dark grey Matt Concrete effect Porcelain Wall & floor Tile, Pack of 3', brand: 'GoodHome', dept: 'tiling-flooring', type: 'tiles', price: 32.00, pack: 1.08, packLabel: '1.08m² pack', colour: '#6B6E70', rating: 4.5, reviews: 40, stock: 14, calcPick: 'ITEM_031' },
   { id: 'ITEM_032', name: 'Cimenti Light grey Matt Concrete effect Porcelain Tile, Single sample', brand: 'GoodHome', dept: 'tiling-flooring', type: 'tiles', price: 3.00, pack: 0.36, packLabel: '1 tile', colour: '#BDBDB8', rating: 4.0, reviews: 6, stock: 30, calcPick: 'ITEM_030' },
   { id: 'ITEM_033', name: 'Konkrete Grey Matt Porcelain Floor Tile, 1.44m² Pack', brand: 'Colours', dept: 'tiling-flooring', type: 'tiles', price: 27.00, pack: 1.44, packLabel: '1.44m² pack', colour: '#A9A9A4', rating: 3.9, reviews: 28, stock: 0, calcPick: 'ITEM_033' },
-  { id: 'ITEM_034', name: 'GoodHome Ready mixed Grey Wall & floor Tile adhesive & grout, 15kg', brand: 'GoodHome', dept: 'tiling-flooring', type: 'tool', price: 22.00, colour: '#9EA3A6', rating: 4.4, reviews: 61, stock: 22 },
+  { id: 'ITEM_034', shape: 'tub', name: 'GoodHome Ready mixed Grey Wall & floor Tile adhesive & grout, 15kg', brand: 'GoodHome', dept: 'tiling-flooring', type: 'tool', price: 22.00, colour: '#9EA3A6', rating: 4.4, reviews: 61, stock: 22 },
 
   // ---------- Decking ----------
   { id: 'ITEM_040', name: 'Blooma Ashmore Brown Softwood Deck board (L)2.4m (W)144mm (T)28mm', brand: 'Blooma', dept: 'outdoor-garden', type: 'decking', price: 13.50, pack: 0.3456, packLabel: '1 board (2.4m)', colour: '#8B5E3C', rating: 4.3, reviews: 143, stock: 200, calcPick: 'ITEM_040', viewed: 38 },
@@ -66,26 +66,33 @@ window.BQ_PRODUCTS = [
   { id: 'ITEM_043', name: 'Blooma Composite Deck board Walnut (L)2.2m (W)140mm', brand: 'Blooma', dept: 'outdoor-garden', type: 'decking', price: 32.00, pack: 0.308, packLabel: '1 board (2.2m)', colour: '#5C4033', rating: 4.6, reviews: 57, stock: 15, calcPick: 'ITEM_043' },
 
   // ---------- Other departments ----------
-  { id: 'ITEM_050', name: 'Verve Rattan effect 4 seater Garden furniture set', brand: 'Verve', dept: 'outdoor-garden', type: 'garden', price: 299.00, wasPrice: 349.00, colour: '#6E5A45', rating: 4.5, reviews: 88, stock: 7 },
-  { id: 'ITEM_051', name: 'Verve 18V Cordless Lawnmower 33cm', brand: 'Verve', dept: 'outdoor-garden', type: 'garden', price: 129.00, colour: '#5DA130', rating: 4.3, reviews: 203, stock: 11 },
-  { id: 'ITEM_052', name: 'Erbauer 18V Li-ion EXT Cordless Combi drill, 2 x 2Ah', brand: 'Erbauer', dept: 'tools-equipment', type: 'power', price: 99.00, wasPrice: 129.00, colour: '#F0A500', rating: 4.7, reviews: 1204, stock: 54, viewed: 212 },
-  { id: 'ITEM_053', name: 'Mac Allister 18V Cordless Jigsaw (Bare)', brand: 'Mac Allister', dept: 'tools-equipment', type: 'power', price: 39.00, colour: '#1F6FB2', rating: 4.2, reviews: 301, stock: 19 },
-  { id: 'ITEM_054', name: 'Magnusson 101 piece Mixed Tool kit', brand: 'Magnusson', dept: 'tools-equipment', type: 'power', price: 45.00, colour: '#D92910', rating: 4.6, reviews: 412, stock: 30 },
-  { id: 'ITEM_055', name: 'GoodHome Pendant Ceiling light, Black', brand: 'GoodHome', dept: 'lighting-electrical', type: 'light', price: 25.00, colour: '#323C41', rating: 4.4, reviews: 66, stock: 25 },
-  { id: 'ITEM_056', name: 'Diall LED Batten light 1500mm', brand: 'Diall', dept: 'lighting-electrical', type: 'light', price: 18.00, colour: '#E6E8E9', rating: 4.5, reviews: 140, stock: 40 },
-  { id: 'ITEM_057', name: 'Cooke & Lewis Duchesse Gloss White Freestanding Vanity unit & basin set', brand: 'Cooke & Lewis', dept: 'bathroom-showers', type: 'bath', price: 249.00, colour: '#F2F2F2', rating: 4.3, reviews: 59, stock: 5 },
-  { id: 'ITEM_058', name: 'GoodHome Teesta Chrome effect Thermostatic Mixer shower', brand: 'GoodHome', dept: 'bathroom-showers', type: 'bath', price: 139.00, colour: '#B7BEC2', rating: 4.4, reviews: 92, stock: 13 },
-  { id: 'ITEM_059', name: 'GoodHome Garcinia Gloss White Kitchen cabinet door (W)500mm', brand: 'GoodHome', dept: 'kitchen-appliances', type: 'kitchen', price: 29.00, colour: '#F4F4F2', rating: 4.2, reviews: 84, stock: 60 },
-  { id: 'ITEM_060', name: 'Cooke & Lewis CLMW20 Freestanding Microwave, White', brand: 'Cooke & Lewis', dept: 'kitchen-appliances', type: 'kitchen', price: 59.00, colour: '#ECECEC', rating: 4.1, reviews: 133, stock: 21 },
-  { id: 'ITEM_061', name: 'GoodHome Oval Mirror (H)80cm (W)50cm', brand: 'GoodHome', dept: 'home-furniture', type: 'home', price: 45.00, colour: '#C9B48A', rating: 4.6, reviews: 47, stock: 16 },
-  { id: 'ITEM_062', name: 'GoodHome Atomia 3 Shelf Bookcase, Oak effect', brand: 'GoodHome', dept: 'home-furniture', type: 'home', price: 65.00, wasPrice: 79.00, colour: '#B08A5E', rating: 4.3, reviews: 71, stock: 9 },
-  { id: 'ITEM_063', name: 'Blue Circle Multi-purpose Cement, 25kg', brand: 'Blue Circle', dept: 'building-hardware', type: 'build', price: 8.75, colour: '#9EA3A6', rating: 4.7, reviews: 510, stock: 300 },
-  { id: 'ITEM_064', name: 'Diall Pozi Zinc-plated Steel Wood screw, Pack of 200', brand: 'Diall', dept: 'building-hardware', type: 'build', price: 6.00, colour: '#C0C4C6', rating: 4.5, reviews: 228, stock: 300 },
-  { id: 'ITEM_065', name: 'GoodHome 1000W Oil-filled Radiator', brand: 'GoodHome', dept: 'heating-plumbing', type: 'heat', price: 49.00, colour: '#F4F4F2', rating: 4.2, reviews: 64, stock: 18 },
-  { id: 'ITEM_066', name: 'Flomasta Chrome effect Pillar tap, Pair', brand: 'Flomasta', dept: 'heating-plumbing', type: 'heat', price: 22.00, colour: '#B7BEC2', rating: 4.0, reviews: 39, stock: 26 },
-  { id: 'ITEM_067', name: 'Pre-lit 6ft Hamilton Artificial Christmas tree', brand: 'B&Q', dept: 'christmas', type: 'xmas', price: 75.00, wasPrice: 100.00, colour: '#2E6B3A', rating: 4.6, reviews: 302, stock: 23 },
-  { id: 'ITEM_068', name: 'Warm white 200 LED String lights', brand: 'B&Q', dept: 'christmas', type: 'xmas', price: 12.00, colour: '#F2C14E', rating: 4.4, reviews: 188, stock: 90 },
-  { id: 'ITEM_069', name: 'Red Velvet Christmas wreath, 50cm', brand: 'B&Q', dept: 'christmas', type: 'xmas', price: 18.00, colour: '#B3202E', rating: 4.5, reviews: 41, stock: 33 }
+  { id: 'ITEM_050', shape: 'furniture', name: 'Verve Rattan effect 4 seater Garden furniture set', brand: 'Verve', dept: 'outdoor-garden', type: 'garden', price: 299.00, wasPrice: 349.00, colour: '#6E5A45', rating: 4.5, reviews: 88, stock: 7 },
+  { id: 'ITEM_051', shape: 'mower', name: 'Verve 18V Cordless Lawnmower 33cm', brand: 'Verve', dept: 'outdoor-garden', type: 'garden', price: 129.00, colour: '#5DA130', rating: 4.3, reviews: 203, stock: 11 },
+  { id: 'ITEM_052', shape: 'drill', name: 'Erbauer 18V Li-ion EXT Cordless Combi drill, 2 x 2Ah', brand: 'Erbauer', dept: 'tools-equipment', type: 'power', price: 99.00, wasPrice: 129.00, colour: '#F0A500', rating: 4.7, reviews: 1204, stock: 54, viewed: 212 },
+  { id: 'ITEM_053', shape: 'jigsaw', name: 'Mac Allister 18V Cordless Jigsaw (Bare)', brand: 'Mac Allister', dept: 'tools-equipment', type: 'power', price: 39.00, colour: '#1F6FB2', rating: 4.2, reviews: 301, stock: 19 },
+  { id: 'ITEM_054', shape: 'toolkit', name: 'Magnusson 101 piece Mixed Tool kit', brand: 'Magnusson', dept: 'tools-equipment', type: 'power', price: 45.00, colour: '#D92910', rating: 4.6, reviews: 412, stock: 30 },
+  { id: 'ITEM_055', shape: 'pendant', name: 'GoodHome Pendant Ceiling light, Black', brand: 'GoodHome', dept: 'lighting-electrical', type: 'light', price: 25.00, colour: '#323C41', rating: 4.4, reviews: 66, stock: 25 },
+  { id: 'ITEM_056', shape: 'batten', name: 'Diall LED Batten light 1500mm', brand: 'Diall', dept: 'lighting-electrical', type: 'light', price: 18.00, colour: '#E6E8E9', rating: 4.5, reviews: 140, stock: 40 },
+  { id: 'ITEM_057', shape: 'vanity', name: 'Cooke & Lewis Duchesse Gloss White Freestanding Vanity unit & basin set', brand: 'Cooke & Lewis', dept: 'bathroom-showers', type: 'bath', price: 249.00, colour: '#F2F2F2', rating: 4.3, reviews: 59, stock: 5 },
+  { id: 'ITEM_058', shape: 'shower', name: 'GoodHome Teesta Chrome effect Thermostatic Mixer shower', brand: 'GoodHome', dept: 'bathroom-showers', type: 'bath', price: 139.00, colour: '#B7BEC2', rating: 4.4, reviews: 92, stock: 13 },
+  { id: 'ITEM_059', shape: 'door', name: 'GoodHome Garcinia Gloss White Kitchen cabinet door (W)500mm', brand: 'GoodHome', dept: 'kitchen-appliances', type: 'kitchen', price: 29.00, colour: '#F4F4F2', rating: 4.2, reviews: 84, stock: 60 },
+  { id: 'ITEM_060', shape: 'microwave', name: 'Cooke & Lewis CLMW20 Freestanding Microwave, White', brand: 'Cooke & Lewis', dept: 'kitchen-appliances', type: 'kitchen', price: 59.00, colour: '#ECECEC', rating: 4.1, reviews: 133, stock: 21 },
+  { id: 'ITEM_061', shape: 'mirror', name: 'GoodHome Oval Mirror (H)80cm (W)50cm', brand: 'GoodHome', dept: 'home-furniture', type: 'home', price: 45.00, colour: '#C9B48A', rating: 4.6, reviews: 47, stock: 16 },
+  { id: 'ITEM_062', shape: 'shelf', name: 'GoodHome Atomia 3 Shelf Bookcase, Oak effect', brand: 'GoodHome', dept: 'home-furniture', type: 'home', price: 65.00, wasPrice: 79.00, colour: '#B08A5E', rating: 4.3, reviews: 71, stock: 9 },
+  { id: 'ITEM_063', shape: 'bag', name: 'Blue Circle Multi-purpose Cement, 25kg', brand: 'Blue Circle', dept: 'building-hardware', type: 'build', price: 8.75, colour: '#9EA3A6', rating: 4.7, reviews: 510, stock: 300 },
+  { id: 'ITEM_064', shape: 'screws', name: 'Diall Pozi Zinc-plated Steel Wood screw, Pack of 200', brand: 'Diall', dept: 'building-hardware', type: 'build', price: 6.00, colour: '#C0C4C6', rating: 4.5, reviews: 228, stock: 300 },
+  { id: 'ITEM_065', shape: 'radiator', name: 'GoodHome 1000W Oil-filled Radiator', brand: 'GoodHome', dept: 'heating-plumbing', type: 'heat', price: 49.00, colour: '#F4F4F2', rating: 4.2, reviews: 64, stock: 18 },
+  { id: 'ITEM_066', shape: 'tap', name: 'Flomasta Chrome effect Pillar tap, Pair', brand: 'Flomasta', dept: 'heating-plumbing', type: 'heat', price: 22.00, colour: '#B7BEC2', rating: 4.0, reviews: 39, stock: 26 },
+  { id: 'ITEM_067', shape: 'tree', name: 'Pre-lit 6ft Hamilton Artificial Christmas tree', brand: 'B&Q', dept: 'christmas', type: 'xmas', price: 75.00, wasPrice: 100.00, colour: '#2E6B3A', rating: 4.6, reviews: 302, stock: 23 },
+  { id: 'ITEM_068', shape: 'lights', name: 'Warm white 200 LED String lights', brand: 'B&Q', dept: 'christmas', type: 'xmas', price: 12.00, colour: '#F2C14E', rating: 4.4, reviews: 188, stock: 90 },
+  { id: 'ITEM_069', shape: 'wreath', name: 'Red Velvet Christmas wreath, 50cm', brand: 'B&Q', dept: 'christmas', type: 'xmas', price: 18.00, colour: '#B3202E', rating: 4.5, reviews: 41, stock: 33 },
+  // ---------- Popular everyday items (these are what a loose keyword search drags in) ----------
+  { id: 'ITEM_070', shape: 'tube', name: 'Diall White Silicone-based Sanitary sealant, 300ml', brand: 'Diall', dept: 'building-hardware', type: 'build', price: 5.50, colour: '#FFFFFF', rating: 4.5, reviews: 1450, stock: 300 },
+  { id: 'ITEM_071', shape: 'socket', name: 'LAP White 13A Switched Double Socket', brand: 'LAP', dept: 'lighting-electrical', type: 'light', price: 4.00, colour: '#FFFFFF', rating: 4.6, reviews: 980, stock: 300 },
+  { id: 'ITEM_072', shape: 'toilet', name: 'Cooke & Lewis White Soft close Toilet seat', brand: 'Cooke & Lewis', dept: 'bathroom-showers', type: 'bath', price: 25.00, colour: '#FFFFFF', rating: 4.3, reviews: 744, stock: 40 },
+  { id: 'ITEM_073', shape: 'worktop', name: 'GoodHome Oak effect Laminate Kitchen worktop (L)3m (D)600mm', brand: 'GoodHome', dept: 'kitchen-appliances', type: 'kitchen', price: 75.00, colour: '#C49A6C', rating: 4.4, reviews: 602, stock: 25 },
+  { id: 'ITEM_074', shape: 'handle', name: 'GoodHome Matt black Lever on rose Door handle, Pair', brand: 'GoodHome', dept: 'building-hardware', type: 'build', price: 12.00, colour: '#222222', rating: 4.4, reviews: 300, stock: 80 },
+  { id: 'ITEM_075', shape: 'rainhead', name: 'GoodHome Matt black Round Rain shower head, 250mm', brand: 'GoodHome', dept: 'bathroom-showers', type: 'bath', price: 39.00, colour: '#222222', rating: 4.2, reviews: 233, stock: 30 }
 ];
 
 /* What the calculator suggests alongside each type. */

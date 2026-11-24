@@ -1,19 +1,20 @@
 # B&Q Project Calculator: Amplitude demo site
 
 A static, multi-page copy of a diy.com shopping journey, built to tell one story: **the new Project
-Calculator works out how much you need, but makes shoppers search for the product themselves, and they drop off.**
+Calculator works out how much you need, but doesn't link to a product. Shoppers have to search for it themselves, the search fails them, and they drop off.**
 
 Plain HTML, CSS and vanilla JS. There is no build step and no backend. Catalogue data is in `assets/js/catalogue.js`;
-basket, login and wishlist state live in `localStorage`. Brand research is in [`brand.md`](brand.md).
+basket, login, wishlist and recently-viewed state live in `localStorage`. Brand research is in [`brand.md`](brand.md).
 
 ## Pages
 
 | Page | What it does |
 |---|---|
-| `index.html` | Homepage: offers, Project Calculator promo, recommendations |
+| `index.html` | Homepage: Project Calculator entry point, Recently viewed, offers, recommendations |
+| `calculator.html?type=paint` | **Standalone Project Calculator**: pick a project (paint, wallpaper, flooring, tiles, decking), measure up, calculate, then "Find a product for your project" |
+| `product.html?id=ITEM_001` | Product page, used for research only (no calculator here) |
 | `category.html?c=<dept>` | Department listing with filters and sort |
-| `search.html?q=<term>` | Header search results |
-| `product.html?id=ITEM_001` | Product page. Paint, wallpaper, flooring, tiles and decking products include the **Project Calculator** |
+| `search.html?q=<term>` | Header search results (this search works properly) |
 | `basket.html` | Basket with voucher codes (`NAILED10`, `BLACKFRIDAY`) |
 | `checkout.html` | Home Delivery (£6, free over £100) or free Click + Collect |
 | `account.html` | Demo user ID, wish list, order history, sign out |
@@ -21,29 +22,41 @@ basket, login and wishlist state live in `localStorage`. Brand research is in [`
 
 ## Demo script (the funnel)
 
-1. Homepage → **Homepage Viewed**
-2. "Try it on paint" → product page → **Product Page Viewed**
-3. Open Project Calculator, enter 4.2 × 3.6 × 2.4, Calculate → **Project Calculator Started**
-4. Search "white matt emulsion 5L" in the calculator → **Calculator Item Search**. This is the friction. The search:
-   - knows nothing about the calculation, so the 5.8 litres just worked out is ignored
-   - searches the whole catalogue with loose keyword matching, so "white" returns Christmas lights, a microwave and a vanity unit, and "matt" returns tiles
-   - silently drops sizes, so "5L" alone returns nothing
-   - pins a sponsored Dulux tin first, then ranks by popularity
-   - shows 5 results at a time with names cut off and no pack size, so the Valspar 1L, 2.5L and 5L tins look the same
-   - puts the right tin (Valspar 5L) last: result 18 of 18, behind three "Show more results" clicks
-   - adds one tin per "Add", whatever quantity you need
+1. **Homepage**: fires Homepage Viewed.
+2. **Research a product**: click the Valspar 5L tin in "Recommended for you". Fires Product Page Viewed. Browse it, read reviews, add it to your wish list.
+3. **Back to the homepage**: the tin now shows under "Recently viewed". Click **Start your project** (or the "Paint a room" tile).
+4. **Calculator**: enter 4.2 × 3.6 × 2.4 and click Calculate. Fires Project Calculator Started. The answer is "5.8 litres", with no product.
+5. **Search for the product**: type "white matt emulsion 5L" in "Find a product for your project". Fires **Calculator Item Search**. This is the friction:
+   - page 1 is sponsored Dulux, then **silicone sealant, a double socket and a toilet seat**, each with its own picture and department label
+   - the search ignores what you just researched, the 5.8 litres, and the fact you're painting
+   - it searches the whole catalogue with loose keyword matching ("white", "matt") and silently drops sizes ("5L")
+   - names are cut off and pack sizes are hidden, so the Valspar 1L, 2.5L and 5L tins look the same
+   - the tin you looked at minutes ago is **result 23 of 23, behind four "Show more results" clicks**
+   - "Add" adds one tin, whatever quantity you need
+6. **Add to basket**: fires Add to Basket, with `source` = `calculator_search`, `calculator_recommendation`, `product_page`, `category`, `search`, and so on.
+7. **Checkout**: fires Order Completed.
 
-   In a replay you'll see repeated searches, "Show more" clicks and shoppers giving up or adding one wrong-size tin.
-5. Add something → **Add to Basket** (`source` = `calculator_search`, `calculator_recommendation`, `product_page`, `category`, `search`, …)
-6. Basket → Checkout → Place order → **Order Completed**
+In a session replay you'll see the toilet seat and sealant on screen, repeated searches, "Show more" clicks, and either a drop-off or one wrong-size tin added.
+Flooring shows the same problem: "natural oak laminate" returns underlay, a kitchen worktop and a bookcase before the Ostrava pack.
 
-Supporting events: Product Searched (header search), Category Browsed (department page), Added to Wishlist (heart),
-Recommended Product Clicked ("Recommended for you", "You might also need", and the added-to-basket modal),
-Offer Viewed ("View offer" on the homepage, "See offer details" on reduced products), Reviews Read (opening Reviews),
-Voucher Code Entered (basket), Basket Abandoned (leaving basket or checkout with items via any non-checkout link),
-session_ended (Sign out, or "End session" in the footer).
+Supporting events:
 
-The blue **Amplitude events** button (bottom right) shows every event as it fires, which is handy on a shared screen.
+| Event | How to trigger it |
+|---|---|
+| Product Searched | Header search |
+| Category Browsed | Open a department page |
+| Added to Wishlist | Click the heart on a product |
+| Recommended Product Clicked | "Recommended for you", "You might also need", or the added-to-basket modal |
+| Offer Viewed | "View offer" on the homepage, or "See offer details" on a reduced product |
+| Reviews Read | Open Reviews on a product page |
+| Voucher Code Entered | Enter a code in the basket |
+| Basket Abandoned | Leave the basket or checkout with items, via any non-checkout link |
+| session_ended | Sign out, or "End session" in the footer |
+
+Project Calculator Started and Calculator Item Search carry the most recently viewed product of that project type as `product_id` (null if there isn't one),
+and the project's department as `product_category`.
+
+The blue **Amplitude events** button (bottom right) shows every event as it fires.
 
 ## Identity
 
@@ -52,10 +65,11 @@ modal and on the account page. Sign out fires `session_ended` then `amplitude.re
 
 ## Web Experiment: `calculator-item-search-improvement`
 
-The treatment (a single "Recommended for your project: 3 x 5L Valspar …, £105.00" card with Add to basket) is
-already in the DOM after Calculate, as `.calc-reco`. It is hidden by CSS unless `<html>` has the `calc-improved` class.
+The treatment is a single card under the calculation: "Recommended for your project: 2 x 5L Valspar …, £70.00", with Add to basket.
+It uses the product you researched, so the right pack in the right quantity.
+It is on the page after Calculate, as `.calc-reco`, and hidden by CSS unless `<html>` has the `calc-improved` class.
 
-To serve it from the Web Experiment visual editor, in the **treatment** variant add custom CSS:
+In the Web Experiment visual editor, give the **treatment** variant this custom CSS:
 
 ```css
 .calc-reco { display: block !important; }

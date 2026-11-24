@@ -158,17 +158,142 @@
 
   /* ============================================================
      Product illustrations (inline SVG, no external images)
+     Each product type / shape gets a distinct, recognisable drawing so a
+     broken search result (a toilet seat for "white matt emulsion") is obvious.
      ============================================================ */
   var BRAND_COL = { Valspar: '#1D3E8F', Dulux: '#00539F', Crown: '#B5121B', GoodHome: '#323C41', 'Graham & Brown': '#2B2B2B', Colours: '#6A3E8E', Diall: '#FA6400', Blooma: '#3F7D3A' };
+  function svgWrap(p, inner) {
+    return '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + esc(p.name) + '"><ellipse cx="100" cy="182" rx="66" ry="7" fill="#000" opacity=".08"/>' + inner + '</svg>';
+  }
+  function txt(x, y, size, fill, s) { return '<text x="' + x + '" y="' + y + '" font-size="' + size + '" text-anchor="middle" fill="' + fill + '" font-family="Arial" font-weight="800">' + s + '</text>'; }
+  var SHAPES = {
+    microwave: function (c) {
+      return '<rect x="22" y="54" width="156" height="104" rx="8" fill="' + c + '" stroke="#9AA0A3" stroke-width="3"/><rect x="34" y="66" width="102" height="80" rx="4" fill="#2B3135"/><rect x="42" y="74" width="52" height="26" fill="#fff" opacity=".15"/>' +
+        '<rect x="144" y="68" width="24" height="12" fill="#2B3135"/><circle cx="156" cy="104" r="9" fill="#9AA0A3"/><circle cx="156" cy="132" r="9" fill="#9AA0A3"/><rect x="32" y="158" width="12" height="10" fill="#555"/><rect x="156" y="158" width="12" height="10" fill="#555"/>';
+    },
+    vanity: function (c) {
+      return '<path d="M100 66 v-26 h18" stroke="#9AA0A3" stroke-width="7" fill="none" stroke-linecap="round"/><rect x="32" y="62" width="136" height="18" rx="6" fill="#fff" stroke="#AAB0B3" stroke-width="2"/><ellipse cx="100" cy="70" rx="42" ry="5" fill="#D8DEE1"/>' +
+        '<rect x="40" y="80" width="120" height="84" fill="' + c + '" stroke="#AAB0B3" stroke-width="2"/><line x1="100" y1="84" x2="100" y2="160" stroke="#C8CDD0" stroke-width="2"/><rect x="86" y="112" width="6" height="18" rx="3" fill="#9AA0A3"/><rect x="108" y="112" width="6" height="18" rx="3" fill="#9AA0A3"/><rect x="46" y="164" width="8" height="12" fill="#666"/><rect x="146" y="164" width="8" height="12" fill="#666"/>';
+    },
+    shower: function () {
+      var d = ''; for (var i = 0; i < 6; i++) d += '<line x1="' + (46 + i * 8) + '" y1="62" x2="' + (40 + i * 8) + '" y2="' + (110 + (i % 2) * 14) + '" stroke="#8FC3FF" stroke-width="3" stroke-dasharray="6 6"/>';
+      return '<rect x="118" y="18" width="9" height="154" rx="4" fill="#B7BEC2"/><path d="M122 34 h-46" stroke="#B7BEC2" stroke-width="8" stroke-linecap="round"/><ellipse cx="64" cy="48" rx="32" ry="11" fill="#9AA0A3"/>' + d +
+        '<rect x="94" y="132" width="66" height="24" rx="12" fill="#CFD4D6" stroke="#9AA0A3" stroke-width="2"/><circle cx="104" cy="144" r="10" fill="#9AA0A3"/><circle cx="150" cy="144" r="10" fill="#9AA0A3"/>';
+    },
+    rainhead: function (c) {
+      var d = ''; for (var i = 0; i < 7; i++) d += '<line x1="' + (52 + i * 16) + '" y1="104" x2="' + (48 + i * 16) + '" y2="' + (150 + (i % 2) * 14) + '" stroke="#8FC3FF" stroke-width="3" stroke-dasharray="6 6"/>';
+      return '<rect x="95" y="14" width="10" height="54" fill="' + c + '"/><ellipse cx="100" cy="86" rx="70" ry="20" fill="' + c + '"/><ellipse cx="100" cy="92" rx="62" ry="12" fill="#555"/>' + d;
+    },
+    tube: function () {
+      return '<path d="M88 44 L100 8 L112 44 Z" fill="#E6E8E9" stroke="#AAB0B3" stroke-width="2"/><rect x="66" y="42" width="68" height="124" rx="6" fill="#fff" stroke="#AAB0B3" stroke-width="3"/><rect x="66" y="74" width="68" height="56" fill="#1D3E8F"/>' +
+        txt(100, 98, 12, '#fff', 'SILICONE') + txt(100, 116, 11, '#fff', 'SEALANT') + '<rect x="70" y="166" width="60" height="12" fill="#888"/>';
+    },
+    socket: function () {
+      var face = function (x) {
+        return '<rect x="' + x + '" y="72" width="56" height="64" rx="4" fill="#F3F3F3" stroke="#D0D4D6" stroke-width="2"/><rect x="' + (x + 22) + '" y="82" width="12" height="20" fill="#3A3F42"/><rect x="' + (x + 8) + '" y="110" width="16" height="10" fill="#3A3F42"/><rect x="' + (x + 32) + '" y="110" width="16" height="10" fill="#3A3F42"/><rect x="' + (x + 44) + '" y="76" width="8" height="12" rx="2" fill="#D92910"/>';
+      };
+      return '<rect x="22" y="56" width="156" height="96" rx="10" fill="#fff" stroke="#AAB0B3" stroke-width="3"/>' + face(36) + face(108);
+    },
+    handle: function (c) {
+      return '<rect x="56" y="30" width="44" height="140" rx="22" fill="' + c + '" opacity=".9"/><circle cx="78" cy="70" r="20" fill="#444"/><rect x="72" y="60" width="112" height="20" rx="10" fill="' + c + '"/><rect x="70" y="122" width="16" height="26" rx="4" fill="#555"/>';
+    },
+    toilet: function () {
+      return '<rect x="58" y="22" width="84" height="20" rx="8" fill="#E6E8E9" stroke="#AAB0B3" stroke-width="2"/><ellipse cx="100" cy="106" rx="60" ry="70" fill="#fff" stroke="#AAB0B3" stroke-width="4"/><ellipse cx="100" cy="114" rx="32" ry="42" fill="#E3EBEF" stroke="#C3CACD" stroke-width="2"/>';
+    },
+    worktop: function (c) {
+      return '<path d="M14 112 L124 68 L188 88 L78 132 Z" fill="' + c + '"/><path d="M14 112 L78 132 L78 150 L14 130 Z" fill="' + c + '"/><path d="M14 112 L78 132 L78 150 L14 130 Z" fill="#000" opacity=".2"/><path d="M78 132 L188 88 L188 106 L78 150 Z" fill="#000" opacity=".1"/>' +
+        '<path d="M40 104 L140 72 M60 110 L160 78 M86 116 L170 88" stroke="#000" opacity=".12" stroke-width="2"/>';
+    },
+    lights: function (c) {
+      var s = '';
+      [[0, 60], [0, 120]].forEach(function (row) {
+        s += '<path d="M10 ' + row[1] + ' Q55 ' + (row[1] + 40) + ' 100 ' + row[1] + ' T190 ' + row[1] + '" stroke="#2E6B3A" stroke-width="3" fill="none"/>';
+        [[28, 14], [56, 20], [100, 0], [144, -20], [172, -14]].forEach(function (b) {
+          var y = row[1] + b[1] + 10;
+          s += '<circle cx="' + b[0] + '" cy="' + y + '" r="16" fill="' + c + '" opacity=".3"/><circle cx="' + b[0] + '" cy="' + y + '" r="8" fill="' + c + '"/>';
+        });
+      });
+      return s;
+    },
+    wreath: function (c) {
+      return '<circle cx="100" cy="96" r="54" fill="none" stroke="#2E6B3A" stroke-width="30"/><circle cx="100" cy="96" r="54" fill="none" stroke="#4A9A5C" stroke-width="10" stroke-dasharray="6 10"/>' +
+        '<circle cx="70" cy="60" r="5" fill="#D92910"/><circle cx="140" cy="84" r="5" fill="#D92910"/><circle cx="62" cy="120" r="5" fill="#D92910"/><path d="M100 148 l-26 26 l10 -34 z M100 148 l26 26 l-10 -34 z" fill="' + c + '"/><circle cx="100" cy="148" r="11" fill="' + c + '"/>';
+    },
+    tree: function (c) {
+      return '<path d="M100 18 L150 90 H124 L162 144 H38 L76 90 H50 Z" fill="' + c + '"/><rect x="90" y="144" width="20" height="28" fill="#6E4B2A"/><circle cx="84" cy="104" r="6" fill="#FFE500"/><circle cx="118" cy="124" r="6" fill="#D92910"/><circle cx="104" cy="64" r="6" fill="#FFE500"/><circle cx="72" cy="132" r="6" fill="#D92910"/>';
+    },
+    mirror: function (c) {
+      return '<ellipse cx="100" cy="96" rx="54" ry="80" fill="' + c + '"/><ellipse cx="100" cy="96" rx="45" ry="71" fill="#DCE8EE"/><path d="M76 56 l22 -14 M72 74 l38 -24" stroke="#fff" stroke-width="6" opacity=".85" stroke-linecap="round"/>';
+    },
+    shelf: function (c) {
+      var books = function (y) { return '<rect x="62" y="' + y + '" width="10" height="34" fill="#D92910"/><rect x="74" y="' + (y + 4) + '" width="10" height="30" fill="#1D3E8F"/><rect x="86" y="' + y + '" width="8" height="34" fill="#F2C14E"/><rect x="118" y="' + (y + 14) + '" width="20" height="20" fill="#5DA130"/>'; };
+      return '<rect x="50" y="16" width="100" height="160" fill="' + c + '"/><rect x="58" y="24" width="84" height="42" fill="#F3EFE8"/><rect x="58" y="74" width="84" height="42" fill="#F3EFE8"/><rect x="58" y="124" width="84" height="44" fill="#F3EFE8"/>' + books(30) + books(80);
+    },
+    bag: function () {
+      return '<path d="M46 38 h108 l12 138 h-132 z" fill="#D9D3C7" stroke="#B9B2A3" stroke-width="3"/><rect x="58" y="70" width="84" height="56" fill="#1D3E8F"/>' + txt(100, 96, 14, '#fff', 'CEMENT') + txt(100, 116, 12, '#FFE500', '25kg');
+    },
+    screws: function () {
+      return '<rect x="46" y="80" width="108" height="90" fill="#FA6400"/><rect x="46" y="80" width="108" height="22" fill="#323C41"/>' + txt(100, 96, 12, '#fff', 'SCREWS') +
+        '<rect x="86" y="18" width="28" height="9" rx="3" fill="#9AA0A3"/><path d="M93 27 h14 l-7 44 z" fill="#B8BEC1"/><path d="M93 34 l14 4 M94 42 l12 4 M96 50 l9 3 M97 58 l7 3" stroke="#888" stroke-width="2"/>';
+    },
+    radiator: function (c) {
+      var f = ''; for (var i = 0; i < 7; i++) f += '<rect x="' + (34 + i * 19) + '" y="44" width="15" height="112" rx="7" fill="' + c + '" stroke="#AAB0B3" stroke-width="2"/>';
+      return f + '<rect x="30" y="98" width="140" height="8" fill="#DDE1E3"/><circle cx="44" cy="166" r="8" fill="#555"/><circle cx="156" cy="166" r="8" fill="#555"/><rect x="150" y="30" width="18" height="14" rx="3" fill="#323C41"/>';
+    },
+    tap: function (c) {
+      return '<rect x="76" y="140" width="48" height="20" rx="4" fill="' + c + '" stroke="#9AA0A3" stroke-width="2"/><rect x="88" y="80" width="24" height="62" rx="6" fill="' + c + '" stroke="#9AA0A3" stroke-width="2"/><path d="M112 98 h40 v18" stroke="' + c + '" stroke-width="14" fill="none"/><path d="M112 98 h40 v18" stroke="#9AA0A3" stroke-width="2" fill="none"/>' +
+        '<path d="M70 70 h60 M100 52 v28" stroke="#9AA0A3" stroke-width="10" stroke-linecap="round"/><circle cx="100" cy="72" r="8" fill="#D92910"/>';
+    },
+    door: function (c) {
+      return '<rect x="56" y="20" width="88" height="156" fill="' + c + '" stroke="#AAB0B3" stroke-width="3"/><rect x="66" y="30" width="68" height="136" fill="none" stroke="#D0D4D6" stroke-width="2"/><rect x="126" y="78" width="7" height="44" rx="3" fill="#6B7276"/>';
+    },
+    pendant: function (c) {
+      return '<line x1="100" y1="8" x2="100" y2="66" stroke="#333" stroke-width="3"/><path d="M56 122 L80 66 L120 66 L144 122 Z" fill="' + c + '"/><circle cx="100" cy="130" r="13" fill="#FFE58A"/><circle cx="100" cy="130" r="26" fill="#FFE58A" opacity=".3"/>';
+    },
+    batten: function () {
+      return '<rect x="12" y="88" width="176" height="24" rx="12" fill="#fff" stroke="#AAB0B3" stroke-width="3"/><rect x="20" y="93" width="160" height="14" rx="7" fill="#FFF3B0"/><rect x="20" y="72" width="160" height="10" fill="#FFF3B0" opacity=".5"/>';
+    },
+    mower: function (c) {
+      return '<path d="M120 112 L170 30" stroke="#333" stroke-width="7" stroke-linecap="round"/><path d="M160 30 h24" stroke="#333" stroke-width="9" stroke-linecap="round"/><path d="M30 112 Q30 84 70 84 H130 Q150 84 150 112 Z" fill="' + c + '"/><rect x="26" y="110" width="128" height="18" fill="#2E3A2E"/>' +
+        '<circle cx="46" cy="142" r="18" fill="#333"/><circle cx="46" cy="142" r="7" fill="#999"/><circle cx="134" cy="142" r="18" fill="#333"/><circle cx="134" cy="142" r="7" fill="#999"/>';
+    },
+    drill: function (c) {
+      return '<rect x="50" y="56" width="100" height="42" rx="12" fill="' + c + '"/><rect x="146" y="68" width="34" height="16" fill="#555"/><rect x="178" y="73" width="16" height="6" fill="#999"/><rect x="66" y="94" width="34" height="58" rx="6" fill="#333"/><rect x="54" y="148" width="60" height="28" rx="4" fill="' + c + '"/><rect x="54" y="160" width="60" height="16" rx="3" fill="#333"/>';
+    },
+    jigsaw: function (c) {
+      return '<path d="M40 70 Q40 40 80 40 H140 Q160 40 160 70 V110 H40 Z" fill="' + c + '"/><rect x="72" y="54" width="56" height="20" rx="10" fill="#fff"/><rect x="32" y="110" width="140" height="14" fill="#555"/><rect x="96" y="124" width="8" height="44" fill="#BBB"/><path d="M96 130 l8 4 M96 140 l8 4 M96 150 l8 4" stroke="#777" stroke-width="2"/>';
+    },
+    toolkit: function (c) {
+      return '<rect x="70" y="30" width="60" height="22" rx="8" fill="none" stroke="#333" stroke-width="8"/><rect x="24" y="50" width="152" height="118" rx="8" fill="' + c + '"/><rect x="24" y="96" width="152" height="8" fill="#000" opacity=".25"/><rect x="88" y="88" width="24" height="22" rx="3" fill="#C0C4C6"/>';
+    },
+    furniture: function (c) {
+      return '<rect x="44" y="112" width="112" height="12" rx="4" fill="' + c + '"/><rect x="58" y="124" width="8" height="44" fill="' + c + '"/><rect x="134" y="124" width="8" height="44" fill="' + c + '"/>' +
+        '<path d="M10 120 h40 v-30 h-34 z" fill="' + c + '" opacity=".85"/><path d="M190 120 h-40 v-30 h34 z" fill="' + c + '" opacity=".85"/><rect x="12" y="120" width="6" height="48" fill="' + c + '"/><rect x="182" y="120" width="6" height="48" fill="' + c + '"/>';
+    },
+    roller: function () {
+      return '<rect x="40" y="40" width="110" height="34" rx="12" fill="#FFF" stroke="#AAB0B3" stroke-width="3"/><path d="M150 57 h16 v40 h-60 v26" stroke="#888" stroke-width="6" fill="none"/><rect x="98" y="122" width="16" height="54" rx="6" fill="#FA6400"/>';
+    },
+    brush: function () {
+      return '<rect x="84" y="20" width="32" height="70" rx="8" fill="#6E4B2A"/><rect x="74" y="88" width="52" height="22" fill="#B7BEC2"/><path d="M72 110 h56 l-6 62 h-44 z" fill="#323C41"/>';
+    },
+    tape: function () {
+      return '<circle cx="100" cy="100" r="66" fill="#E9D8A6"/><circle cx="100" cy="100" r="30" fill="#fff" stroke="#D2BE86" stroke-width="3"/><path d="M160 120 L190 170" stroke="#E9D8A6" stroke-width="26"/>';
+    },
+    sheet: function () {
+      return '<path d="M30 60 Q100 30 170 60 L160 160 Q100 140 40 160 Z" fill="#BFD6E6" opacity=".9" stroke="#9BB8CC" stroke-width="2"/><path d="M60 70 Q80 110 70 150 M110 60 Q125 100 118 146" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/>';
+    },
+    tub: function (c) {
+      return '<path d="M44 60 h112 l-10 110 h-92 z" fill="' + c + '" stroke="#888" stroke-width="2"/><rect x="38" y="48" width="124" height="18" rx="4" fill="#6B7276"/><rect x="58" y="90" width="84" height="44" fill="#FA6400"/>' + txt(100, 110, 11, '#fff', 'ADHESIVE') + txt(100, 126, 10, '#fff', '15kg');
+    }
+  };
+
   function art(p) {
     var c = p.colour || '#ccc', b = BRAND_COL[p.brand] || '#323C41', s;
-    var head = '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + esc(p.name) + '">';
-    var shadow = '<ellipse cx="100" cy="182" rx="66" ry="7" fill="#000" opacity=".08"/>';
+    if (p.shape && SHAPES[p.shape]) return svgWrap(p, SHAPES[p.shape](c));
     switch (p.type) {
       case 'paint':
-        var small = p.pack < 1;
-        if (small) {
-          s = '<rect x="78" y="96" width="44" height="78" rx="4" fill="#cfd4d6"/><rect x="78" y="110" width="44" height="46" fill="' + c + '" stroke="#e3e3e3"/><rect x="78" y="110" width="44" height="10" fill="' + b + '"/><rect x="74" y="86" width="52" height="14" rx="3" fill="' + b + '"/><text x="100" y="146" font-size="9" text-anchor="middle" fill="#323C41" font-family="Arial" font-weight="700">' + esc(p.packLabel) + '</text>';
+        if (p.pack < 1) {
+          s = '<rect x="78" y="96" width="44" height="78" rx="4" fill="#cfd4d6"/><rect x="78" y="110" width="44" height="46" fill="' + c + '" stroke="#e3e3e3"/><rect x="78" y="110" width="44" height="10" fill="' + b + '"/><rect x="74" y="86" width="52" height="14" rx="3" fill="' + b + '"/>' + txt(100, 146, 9, '#323C41', esc(p.packLabel));
         } else {
           var w = p.pack >= 10 ? 132 : p.pack >= 5 ? 116 : p.pack >= 2.5 ? 96 : 78;
           var hgt = p.pack >= 10 ? 132 : p.pack >= 5 ? 118 : p.pack >= 2.5 ? 100 : 82;
@@ -177,38 +302,29 @@
             '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + hgt + '" rx="5" fill="#cfd4d6"/>' +
             '<rect x="' + x + '" y="' + (y + 22) + '" width="' + w + '" height="' + (hgt - 40) + '" fill="' + c + '" stroke="#e1e1e1"/>' +
             '<rect x="' + x + '" y="' + (y + 22) + '" width="' + w + '" height="18" fill="' + b + '"/>' +
-            '<text x="100" y="' + (y + 35) + '" font-size="11" text-anchor="middle" fill="#fff" font-family="Arial" font-weight="700">' + esc(p.brand.toUpperCase()) + '</text>' +
-            '<text x="100" y="' + (y + hgt - 28) + '" font-size="15" text-anchor="middle" fill="#323C41" font-family="Arial" font-weight="800">' + esc(p.packLabel) + '</text>' +
+            txt(100, y + 35, 11, '#fff', esc(p.brand.toUpperCase())) + txt(100, y + hgt - 28, 15, '#323C41', esc(p.packLabel)) +
             '<ellipse cx="100" cy="' + y + '" rx="' + (w / 2) + '" ry="8" fill="#b5bbbe"/>' +
             '<rect x="' + (x + w - 30) + '" y="' + (y + 48) + '" width="20" height="20" fill="' + c + '" stroke="#999" stroke-width=".5"/>';
         }
-        return head + shadow + s + '</svg>';
+        return svgWrap(p, s);
       case 'flooring':
         s = '';
-        for (var i = 0; i < 6; i++) { s += '<rect x="' + (22 + (i % 2) * 12) + '" y="' + (40 + i * 22) + '" width="144" height="20" fill="' + c + '" stroke="rgba(0,0,0,.18)"/><path d="M' + (40 + i * 17) + ' ' + (44 + i * 22) + ' q30 4 70 0" stroke="rgba(0,0,0,.12)" fill="none"/>'; }
-        return head + shadow + s + '</svg>';
+        for (var i = 0; i < 6; i++) s += '<rect x="' + (22 + (i % 2) * 12) + '" y="' + (40 + i * 22) + '" width="144" height="20" fill="' + c + '" stroke="rgba(0,0,0,.18)"/><path d="M' + (40 + i * 17) + ' ' + (44 + i * 22) + ' q30 4 70 0" stroke="rgba(0,0,0,.12)" fill="none"/>';
+        return svgWrap(p, s);
       case 'tiles':
         s = '<rect x="30" y="30" width="140" height="140" fill="#e9e9e6"/>';
         for (var r = 0; r < 3; r++) for (var k = 0; k < 3; k++) s += '<rect x="' + (33 + k * 46) + '" y="' + (33 + r * 46) + '" width="43" height="43" fill="' + c + '"/>';
-        return head + shadow + s + '<path d="M40 60 l20 -6 M110 120 l25 4" stroke="rgba(255,255,255,.35)" stroke-width="3"/></svg>';
+        return svgWrap(p, s + '<path d="M40 60 l20 -6 M110 120 l25 4" stroke="rgba(255,255,255,.35)" stroke-width="3"/>');
       case 'wallpaper':
         s = '<rect x="40" y="26" width="110" height="148" fill="#F4F1EA"/>';
         for (var j = 0; j < 9; j++) { var lx = 52 + (j % 3) * 34, ly = 40 + Math.floor(j / 3) * 46; s += '<path d="M' + lx + ' ' + (ly + 30) + ' Q' + (lx + 2) + ' ' + ly + ' ' + (lx + 20) + ' ' + (ly + 4) + ' Q' + (lx + 18) + ' ' + (ly + 26) + ' ' + lx + ' ' + (ly + 30) + 'Z" fill="' + c + '"/>'; }
-        return head + shadow + s + '<rect x="150" y="26" width="18" height="148" rx="9" fill="' + c + '" opacity=".85"/><ellipse cx="159" cy="26" rx="9" ry="4" fill="#ddd"/></svg>';
+        return svgWrap(p, s + '<rect x="150" y="26" width="18" height="148" rx="9" fill="' + c + '" opacity=".85"/><ellipse cx="159" cy="26" rx="9" ry="4" fill="#ddd"/>');
       case 'decking':
         s = '';
         for (var d = 0; d < 5; d++) s += '<g transform="translate(' + (d * 8) + ',' + (d * 22) + ')"><rect x="16" y="50" width="150" height="18" fill="' + c + '" stroke="rgba(0,0,0,.25)"/><path d="M20 55 h140 M20 59 h140 M20 63 h140" stroke="rgba(0,0,0,.18)"/></g>';
-        return head + shadow + s + '</svg>';
-      case 'power':
-        return head + shadow + '<rect x="58" y="62" width="96" height="40" rx="10" fill="' + c + '"/><rect x="150" y="74" width="30" height="14" fill="#555"/><rect x="74" y="98" width="30" height="58" rx="6" fill="#333"/><rect x="62" y="150" width="56" height="26" rx="4" fill="' + c + '"/></svg>';
-      case 'light':
-        return head + shadow + '<line x1="100" y1="10" x2="100" y2="70" stroke="#333" stroke-width="3"/><path d="M60 120 L80 70 L120 70 L140 120 Z" fill="' + c + '"/><circle cx="100" cy="128" r="12" fill="#FFE58A"/></svg>';
-      case 'xmas':
-        return head + shadow + '<path d="M100 22 L150 92 H124 L160 142 H40 L76 92 H50 Z" fill="' + c + '"/><rect x="90" y="142" width="20" height="28" fill="#6E4B2A"/><circle cx="84" cy="104" r="5" fill="#FFE500"/><circle cx="118" cy="122" r="5" fill="#D92910"/><circle cx="104" cy="66" r="5" fill="#FFE500"/></svg>';
-      case 'garden':
-        return head + shadow + '<rect x="40" y="96" width="120" height="16" fill="' + c + '"/><rect x="40" y="56" width="16" height="110" fill="' + c + '"/><rect x="144" y="96" width="16" height="70" fill="' + c + '"/><rect x="40" y="56" width="120" height="14" fill="' + c + '" opacity=".85"/></svg>';
+        return svgWrap(p, s);
       default:
-        return head + shadow + '<rect x="46" y="46" width="108" height="122" fill="' + c + '" stroke="rgba(0,0,0,.15)"/><rect x="46" y="46" width="108" height="20" fill="' + b + '"/><text x="100" y="60" font-size="11" text-anchor="middle" fill="#fff" font-family="Arial" font-weight="700">' + esc(p.brand.toUpperCase()) + '</text></svg>';
+        return svgWrap(p, '<rect x="46" y="46" width="108" height="122" fill="' + c + '" stroke="rgba(0,0,0,.15)"/><rect x="46" y="46" width="108" height="20" fill="' + b + '"/>' + txt(100, 60, 11, '#fff', esc(p.brand.toUpperCase())));
     }
   }
 
@@ -339,7 +455,7 @@
           '<a class="logo" href="index.html" aria-label="B&amp;Q homepage">B&amp;Q</a>' +
           '<form class="search" action="search.html" method="get" role="search"><label class="sr-only" for="q">Search</label><input id="q" name="q" placeholder="Search" value="' + esc(page === 'search' ? (qs('q') || '') : '') + '" autocomplete="off"><button type="submit" aria-label="Search">' + ICON.search + '</button></form>' +
           '<nav class="icons" aria-label="Shortcuts">' +
-            '<a href="index.html#project-calculator" class="hide-sm">' + ICON.ideas + '<span>Ideas &amp; Advice</span></a>' +
+            '<a href="calculator.html" class="hide-sm">' + ICON.ideas + '<span>Project Calculator</span></a>' +
             '<a href="404.html" class="hide-md">' + ICON.services + '<span>Services</span></a>' +
             '<a href="404.html" class="hide-md">' + ICON.stores + '<span>Stores</span></a>' +
             '<a href="account.html">' + ICON.account + '<span>' + (u ? 'Account' : 'Sign in') + '</span></a>' +
@@ -391,15 +507,20 @@
   }
 
   /* ============================================================
-     Project Calculator (the friction story)
+     Project Calculator: standalone tool (calculator.html), reached from the homepage.
+     It works out a quantity, but knows nothing about the products you've been
+     researching and doesn't link to one. You have to search for it yourself.
      ============================================================ */
-  var CALC_COPY = {
-    paint: { what: 'paint', ph: 'e.g. white matt emulsion 5L' },
-    wallpaper: { what: 'wallpaper', ph: 'e.g. green leaves wallpaper' },
-    flooring: { what: 'flooring', ph: 'e.g. oak laminate' },
-    tiles: { what: 'tiles', ph: 'e.g. light grey porcelain tile' },
-    decking: { what: 'decking', ph: 'e.g. brown deck board' }
-  };
+  var CALC_DEFS = [
+    { type: 'paint', label: 'Paint a room', dept: 'painting-decorating', def: 'ITEM_001', what: 'paint', ph: 'e.g. white matt emulsion 5L' },
+    { type: 'wallpaper', label: 'Wallpaper a room', dept: 'painting-decorating', def: 'ITEM_011', what: 'wallpaper', ph: 'e.g. green leaves wallpaper' },
+    { type: 'flooring', label: 'Lay flooring', dept: 'tiling-flooring', def: 'ITEM_020', what: 'flooring', ph: 'e.g. natural oak laminate' },
+    { type: 'tiles', label: 'Tile a floor or wall', dept: 'tiling-flooring', def: 'ITEM_030', what: 'tiles', ph: 'e.g. light grey porcelain tile' },
+    { type: 'decking', label: 'Build a deck', dept: 'outdoor-garden', def: 'ITEM_040', what: 'decking', ph: 'e.g. brown softwood deck board' }
+  ];
+  function calcDef(type) { return CALC_DEFS.filter(function (c) { return c.type === type; })[0] || CALC_DEFS[0]; }
+  function recentlyViewed() { return LS.get('bq_recent', []).map(byId).filter(Boolean); }
+
   function calcFields(type) {
     var num = function (id, label, ph) { return '<div class="field"><label for="' + id + '">' + label + '</label><input id="' + id + '" type="number" inputmode="decimal" step="0.1" min="0" placeholder="' + ph + '"></div>'; };
     if (type === 'paint') return num('cL', 'Room length (m)', '4.2') + num('cW', 'Room width (m)', '3.6') + num('cH', 'Wall height (m)', '2.4') +
@@ -425,13 +546,13 @@
   }
 
   /* The friction. This is the search B&Q shipped inside the calculator, and it is deliberately poor:
-     - it knows nothing about the calculation (quantity, product type, the product you're on)
-     - it searches the WHOLE catalogue with loose OR keyword matching ("white" -> microwaves, vanity units)
+     - it knows nothing about the calculation, the project type or what you've been looking at
+     - it searches the WHOLE catalogue with loose OR keyword matching ("white" -> sealant, sockets, toilet seats)
      - it drops any token containing a digit, so "5L" or "10L" are silently ignored
      - a sponsored other-brand product is always pinned first
-     - ranking is by popularity, and the right pack for the job always lands last (on the last page) */
+     - ranking is by sitewide popularity, and the right pack for the job always lands last */
   var CALC_PAGE = 5;
-  function calcSearch(p, term) {
+  function calcSearch(ctx, term) {
     var tokens = term.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/)
       .filter(function (t) { return t.length > 2 && !/\d/.test(t); });
     if (!tokens.length) return [];
@@ -440,64 +561,59 @@
       return tokens.some(function (t) { return words.some(function (w) { return w.indexOf(t) === 0; }); });
     });
     if (!hits.length) return [];
-    var ideal = byId(p.calcPick);
-    var sponsored = PRODUCTS.filter(function (x) { return x.type === p.type && x.brand !== p.brand && x.stock; })
+    var ideal = ctx.ideal;
+    var sponsored = PRODUCTS.filter(function (x) { return x.type === ctx.type && x.brand !== ideal.brand && x.stock; })
       .sort(function (a, b) { return b.reviews - a.reviews; })[0];
     var rest = hits.filter(function (x) { return x !== sponsored && x !== ideal; }).sort(function (a, b) { return b.reviews - a.reviews; });
-    if (ideal && hits.indexOf(ideal) >= 0) rest.push(ideal);
+    if (hits.indexOf(ideal) >= 0) rest.push(ideal);
     return (sponsored ? [{ p: sponsored, sponsored: true }] : []).concat(rest.map(function (x) { return { p: x }; }));
   }
   function clip(s, n) { return s.length > n ? s.slice(0, n).replace(/\s+\S*$/, '') + '…' : s; }
 
-  function renderCalc(p, mount) {
-    var copy = CALC_COPY[p.type];
+  // ctx = { type, def, context (last researched product of this type, or null), ideal (the right pack) }
+  function renderCalc(ctx, mount) {
     mount.innerHTML =
-      '<section class="calc" id="calc">' +
-        '<button class="calc-toggle" type="button" aria-expanded="false" aria-controls="calcBody"><span class="ico" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="3" width="14" height="18"/><path d="M8 7h8M8 11h2M12 11h2M8 15h2M12 15h2M16 11v6"/></svg></span>' +
-        '<span><b>Project Calculator <span class="tag-new">New</span></b><span class="small muted">Work out how much ' + copy.what + ' you need for your room</span></span><span class="chev" aria-hidden="true">⌄</span></button>' +
-        '<div class="calc-body" id="calcBody" hidden>' +
-          '<form id="calcForm" novalidate><div class="calc-fields">' + calcFields(p.type) + '</div>' +
-          '<div class="calc-actions"><button class="btn btn-dark" type="submit">Calculate</button><span class="small muted">Measure in metres. Don\'t subtract doors or windows, it\'s handy to have a little extra.</span></div></form>' +
-          '<div class="calc-result" id="calcResult" hidden>' +
-            '<div class="small muted">You\'ll need about</div>' +
-            '<div class="calc-answer"><span class="big" id="calcBig"></span><span class="sub" id="calcSub"></span></div>' +
-            '<div class="calc-reco" id="calcReco" data-flag="calculator-item-search-improvement"></div>' +
-            '<div class="calc-search"><label for="calcQ"><b>Find a product for your project</b></label>' +
-              '<form id="calcSearchForm" style="margin-top:6px" role="search"><input id="calcQ" placeholder="' + copy.ph + '" autocomplete="off" enterkeyhint="search"><button type="submit">Search</button></form>' +
-              '<div class="calc-results" id="calcResults" aria-live="polite"></div>' +
-            '</div>' +
+      '<section class="calc open" id="calc"><div class="calc-body">' +
+        '<form id="calcForm" novalidate><div class="calc-fields">' + calcFields(ctx.type) + '</div>' +
+        '<div class="calc-actions"><button class="btn btn-dark" type="submit">Calculate</button><span class="small muted">Measure in metres. Don\'t subtract doors or windows, it\'s handy to have a little extra.</span></div></form>' +
+        '<div class="calc-result" id="calcResult" hidden>' +
+          '<div class="small muted">You\'ll need about</div>' +
+          '<div class="calc-answer"><span class="big" id="calcBig"></span><span class="sub" id="calcSub"></span></div>' +
+          '<div class="calc-reco" id="calcReco" data-flag="calculator-item-search-improvement"></div>' +
+          '<div class="calc-search"><label for="calcQ"><b>Find a product for your project</b></label>' +
+            '<form id="calcSearchForm" style="margin-top:6px" role="search"><input id="calcQ" placeholder="' + ctx.def.ph + '" autocomplete="off" enterkeyhint="search"><button type="submit">Search</button></form>' +
+            '<div class="calc-results" id="calcResults" aria-live="polite"></div>' +
           '</div>' +
         '</div>' +
-      '</section>';
-    var root = $('#calc'), started = false, last = null;
-    $('.calc-toggle', root).addEventListener('click', function () {
-      var body = $('#calcBody'); body.hidden = !body.hidden;
-      root.classList.toggle('open', !body.hidden); this.setAttribute('aria-expanded', String(!body.hidden));
-      if (!body.hidden) $('#cL').focus();
-    });
+      '</div></section>';
+    var started = false, lastResults = [], shownCount = 0;
+    var cat = deptName(ctx.def.dept);
     $('#calcForm').addEventListener('submit', function (e) {
       e.preventDefault();
-      var res = computeCalc(p.type);
+      var res = computeCalc(ctx.type);
       if (!res) { $$('#calcForm input').forEach(function (i) { if (!(parseFloat(i.value) > 0)) i.style.borderColor = '#D92910'; }); return; }
       $$('#calcForm input').forEach(function (i) { i.style.borderColor = ''; });
-      last = res;
       if (!started) {
         started = true;
-        track('Project Calculator Started', { product_id: p.id, product_category: deptName(p.dept), product_price: p.price, basket_value: basketValue() });
+        track('Project Calculator Started', {
+          product_id: ctx.context ? ctx.context.id : null, product_category: cat,
+          product_price: ctx.context ? ctx.context.price : null, basket_value: basketValue()
+        });
       }
       $('#calcBig').textContent = res.big; $('#calcSub').textContent = res.sub;
       $('#calcResult').hidden = false;
-      renderReco(p, res);
+      renderReco(ctx, res);
       $('#calcResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
     $('#calcSearchForm').addEventListener('submit', function (e) {
       e.preventDefault();
       var term = $('#calcQ').value.trim(); if (!term) { $('#calcQ').focus(); return; }
-      var results = calcSearch(p, term);
+      $('#calcQ').blur();
+      var results = calcSearch(ctx, term);
       var t = totals('home');
       track('Calculator Item Search', {
         search_term: term, results_count: results.length,
-        product_id: p.id, product_category: deptName(p.dept),
+        product_id: ctx.context ? ctx.context.id : null, product_category: cat,
         basket_value: t.basket_value, delivery_cost: t.delivery_cost, vat_amount: t.vat_amount, order_total: t.order_total, free_delivery_eligible: t.free_delivery_eligible
       });
       var box = $('#calcResults');
@@ -507,13 +623,13 @@
         '<button class="btn btn-outline btn-sm" type="button" id="calcMore">Show more results</button>';
       showMoreResults();
     });
-    var lastResults = [], shownCount = 0;
     function showMoreResults() {
       var next = lastResults.slice(shownCount, shownCount + CALC_PAGE);
       shownCount += next.length;
       $('#calcList').insertAdjacentHTML('beforeend', next.map(function (r) {
         var x = r.p;
-        return '<div class="calc-item"><div class="thumb">' + art(x) + '</div><div><div class="t"><a href="product.html?id=' + x.id + '" title="' + esc(x.name) + '">' + esc(clip(x.name, 44)) + '</a></div><div class="meta">' +
+        return '<div class="calc-item"><div class="thumb">' + art(x) + '</div><div><div class="t"><a href="product.html?id=' + x.id + '" title="' + esc(x.name) + '">' + esc(clip(x.name, 44)) + '</a></div>' +
+          '<div class="dept">' + esc(deptName(x.dept)) + '</div><div class="meta">' +
           (r.sponsored ? '<span class="pill pill-spons">Sponsored</span>' : '') +
           (x.stock ? '' : '<span class="pill pill-oos">Out of stock</span>') + stars(x) + '</div></div>' +
           '<div class="buy"><div class="p">' + money(x.price) + '</div><button class="btn btn-buy btn-sm" type="button" data-cadd="' + x.id + '"' + (x.stock ? '' : ' disabled') + '>' + (x.stock ? 'Add' : 'Unavailable') + '</button></div></div>';
@@ -535,8 +651,8 @@
   }
 
   // Experiment treatment: one clear recommendation. Hidden unless <html> has .calc-improved.
-  function renderReco(p, res) {
-    var ideal = byId(p.calcPick); var el = $('#calcReco');
+  function renderReco(ctx, res) {
+    var ideal = ctx.ideal; var el = $('#calcReco');
     if (!ideal || !ideal.pack) { el.innerHTML = ''; return; }
     var qty = Math.max(1, Math.ceil(res.need / ideal.pack - 1e-9));
     el.innerHTML = '<div class="row"><div class="thumb">' + art(ideal) + '</div><div><div class="lbl">Recommended for your project</div>' +
@@ -567,8 +683,13 @@
       modal(o.title, '<p>' + esc(o.blurb) + '</p>' + (o.code ? '<p>Use code <span class="idbox" style="display:inline-block;padding:4px 10px">' + o.code + '</span> in your basket.</p>' : '') +
         '<p class="small muted">Offer type: ' + o.offer_type.replace('_', ' ') + (o.offer_pct ? ' · ' + Math.round(o.offer_pct * 100) + '% off' : '') + '</p><a class="btn btn-orange" href="' + o.link + '">Shop the offer</a>');
     });
-    var calcIds = ['ITEM_001', 'ITEM_020', 'ITEM_030', 'ITEM_011', 'ITEM_040'], labels = ['Paint', 'Flooring', 'Tiles', 'Wallpaper', 'Decking'];
-    $('#calcTiles').innerHTML = calcIds.map(function (id, i) { return '<a href="product.html?id=' + id + '#calc"><div class="tile">' + art(byId(id)) + '</div>' + labels[i] + '</a>'; }).join('');
+    $('#calcTiles').innerHTML = CALC_DEFS.map(function (c) { return '<a href="calculator.html?type=' + c.type + '"><div class="tile">' + art(byId(c.def)) + '</div>' + esc(c.label) + '</a>'; }).join('');
+    var recent = recentlyViewed().slice(0, 4);
+    if (recent.length) {
+      $('#recentSec').hidden = false;
+      $('#recent').innerHTML = recent.map(function (p) { return card(p); }).join('');
+      wireCards($('#recent'), 'recently_viewed', false);
+    }
     var recs = ['ITEM_001', 'ITEM_052', 'ITEM_020', 'ITEM_067', 'ITEM_006', 'ITEM_040', 'ITEM_050', 'ITEM_030'].map(byId);
     var grid = $('#recs'); grid.innerHTML = recs.map(function (p) { return card(p); }).join('');
     wireCards(grid, 'homepage_recommendations', true);
@@ -650,6 +771,7 @@
     if (!p) { mount.innerHTML = '<h1>Sorry, we couldn\'t find that product</h1><p><a class="btn btn-orange" href="index.html">Back to homepage</a></p>'; return; }
     document.title = p.name + ' | DIY at B&Q';
     track('Product Page Viewed', { product_id: p.id, product_category: deptName(p.dept), product_price: p.price });
+    LS.set('bq_recent', [p.id].concat(LS.get('bq_recent', []).filter(function (x) { return x !== p.id; })).slice(0, 8));
     var inWish = wishlist().indexOf(p.id) >= 0;
     var specs = [['Brand', p.brand], ['Product code', p.id], ['Pack size', p.packLabel || '1'], ['Department', deptName(p.dept)]];
     if (p.type === 'paint') specs.push(['Finish', p.finish || 'Matt'], ['Coverage', '13 m² per litre'], ['Drying time', '2 hours touch dry']);
@@ -667,7 +789,6 @@
           '<div class="buyrow"><div class="qty"><button type="button" data-q="-1" aria-label="Decrease quantity">−</button><input id="qty" type="number" min="1" value="1" inputmode="numeric" aria-label="Quantity"><button type="button" data-q="1" aria-label="Increase quantity">+</button></div>' +
             '<button class="btn btn-buy" type="button" id="addBtn"' + (p.stock ? '' : ' disabled') + '>' + (p.stock ? 'Add to basket' : 'Out of stock') + '</button>' +
             '<button class="wish-inline' + (inWish ? ' on' : '') + '" type="button" id="wishBtn" aria-label="Add to wish list">' + HEART + '</button></div>' +
-          '<div id="calcMount"></div>' +
           '<div class="accordion">' +
             '<details><summary>Product details</summary><div class="inner"><p>' + esc(p.name) + '. ' + (p.type === 'paint' ? 'A durable, wipeable finish for walls and ceilings. From small updates to big transformations, it\'s an easy way to refresh any room.' : 'Quality you can rely on at a price that\'s nailed.') + '</p></div></details>' +
             '<details><summary>Specifications</summary><div class="inner"><table class="specs">' + specs.map(function (s) { return '<tr><td>' + esc(s[0]) + '</td><td>' + esc(s[1]) + '</td></tr>'; }).join('') + '</table></div></details>' +
@@ -690,10 +811,6 @@
       trackOffer(o);
       modal('Prices. Nailed.', '<p>We\'ve nailed down the price on this product: was ' + money(p.wasPrice) + ', now ' + money(p.price) + '.</p><p><b>You save ' + money(o.saving_amount) + ' (' + Math.round(o.offer_pct * 100) + '% off).</b></p><p class="small muted">While stocks last. Online and in store.</p>');
     });
-    if (CALC_TYPES[p.type]) {
-      renderCalc(p, $('#calcMount'));
-      if (location.hash === '#calc') { $('.calc-toggle').click(); setTimeout(function () { $('#calc').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50); }
-    }
     var recs = (window.BQ_GOES_WITH[p.type] || window.BQ_GOES_WITH._default).map(byId).filter(function (x) { return x && x.id !== p.id; });
     var grid = $('#recs'); grid.innerHTML = recs.map(function (r) { return card(r); }).join('');
     wireCards(grid, 'pdp_recommendations', true);
@@ -835,6 +952,27 @@
     if ($('#soBtn')) $('#soBtn').addEventListener('click', logout);
     if ($('#siBtn')) $('#siBtn').addEventListener('click', openLogin);
     if ($('#wishGrid')) wireCards($('#wishGrid'), 'wishlist', false);
+  };
+
+  pages.calculator = function () {
+    var recent = recentlyViewed();
+    var lastCalc = recent.filter(function (p) { return CALC_TYPES[p.type]; })[0];
+    var type = CALC_TYPES[qs('type')] ? qs('type') : (lastCalc ? lastCalc.type : 'paint');
+    function select(t) {
+      type = t;
+      var def = calcDef(t);
+      var context = recent.filter(function (p) { return p.type === t && p.calcPick; })[0] || null;
+      var ideal = byId(context ? context.calcPick : def.def);
+      $$('#calcTypes [data-type]').forEach(function (b) { var on = b.getAttribute('data-type') === t; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+      $('#calcIntro').textContent = 'Work out how much ' + def.what + ' you need. Pop in your measurements and we\'ll do the maths.';
+      renderCalc({ type: t, def: def, context: context, ideal: ideal }, $('#calcMount'));
+      try { history.replaceState(null, '', 'calculator.html?type=' + t); } catch (e) {}
+    }
+    $('#calcTypes').innerHTML = CALC_DEFS.map(function (c) {
+      return '<button type="button" class="calc-type" data-type="' + c.type + '" aria-pressed="false"><span class="tile">' + art(byId(c.def)) + '</span>' + esc(c.label) + '</button>';
+    }).join('');
+    $('#calcTypes').addEventListener('click', function (e) { var b = e.target.closest('[data-type]'); if (b && b.getAttribute('data-type') !== type) select(b.getAttribute('data-type')); });
+    select(type);
   };
 
   pages.notfound = function () {};
