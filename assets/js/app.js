@@ -424,21 +424,30 @@
     return { need: total, big: total + ' m²', sub: Math.round(X * 100) + '% waste · ' + area.toFixed(1) + ' m² ' + (type === 'decking' ? 'deck' : 'floor') + ' area' };
   }
 
-  // Deliberately weak search: keyword OR-match, sponsored other-brand first, cheapest first, the right pack pushed down.
+  /* The friction. This is the search B&Q shipped inside the calculator, and it is deliberately poor:
+     - it knows nothing about the calculation (quantity, product type, the product you're on)
+     - it searches the WHOLE catalogue with loose OR keyword matching ("white" -> microwaves, vanity units)
+     - it drops any token containing a digit, so "5L" or "10L" are silently ignored
+     - a sponsored other-brand product is always pinned first
+     - ranking is by popularity, and the right pack for the job always lands last (on the last page) */
+  var CALC_PAGE = 5;
   function calcSearch(p, term) {
-    var tokens = term.toLowerCase().replace(/[^a-z0-9.² ]+/g, ' ').split(/\s+/).filter(function (t) { return t.length > 1; });
-    var pool = PRODUCTS.filter(function (x) { return x.type === p.type; });
-    var hits = pool.filter(function (x) {
-      var hay = (x.name + ' ' + x.brand + ' ' + (x.packLabel || '')).toLowerCase();
-      return tokens.some(function (t) { return hay.indexOf(t) >= 0; });
+    var tokens = term.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/)
+      .filter(function (t) { return t.length > 2 && !/\d/.test(t); });
+    if (!tokens.length) return [];
+    var hits = PRODUCTS.filter(function (x) {
+      var words = (x.name + ' ' + x.brand).toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/);
+      return tokens.some(function (t) { return words.some(function (w) { return w.indexOf(t) === 0; }); });
     });
     if (!hits.length) return [];
     var ideal = byId(p.calcPick);
-    var sponsored = pool.filter(function (x) { return x.brand !== p.brand && x.stock; })[0];
-    var rest = hits.filter(function (x) { return x !== sponsored; }).sort(function (a, b) { return a.price - b.price; });
-    if (ideal && rest.indexOf(ideal) >= 0) { rest.splice(rest.indexOf(ideal), 1); rest.splice(Math.max(0, rest.length - 1), 0, ideal); }
+    var sponsored = PRODUCTS.filter(function (x) { return x.type === p.type && x.brand !== p.brand && x.stock; })
+      .sort(function (a, b) { return b.reviews - a.reviews; })[0];
+    var rest = hits.filter(function (x) { return x !== sponsored && x !== ideal; }).sort(function (a, b) { return b.reviews - a.reviews; });
+    if (ideal && hits.indexOf(ideal) >= 0) rest.push(ideal);
     return (sponsored ? [{ p: sponsored, sponsored: true }] : []).concat(rest.map(function (x) { return { p: x }; }));
   }
+  function clip(s, n) { return s.length > n ? s.slice(0, n).replace(/\s+\S*$/, '') + '…' : s; }
 
   function renderCalc(p, mount) {
     var copy = CALC_COPY[p.type];
@@ -492,16 +501,28 @@
         basket_value: t.basket_value, delivery_cost: t.delivery_cost, vat_amount: t.vat_amount, order_total: t.order_total, free_delivery_eligible: t.free_delivery_eligible
       });
       var box = $('#calcResults');
-      if (!results.length) { box.innerHTML = '<div class="count">0 results for "' + esc(term) + '". Try a different search term.</div>'; return; }
-      box.innerHTML = '<div class="count">' + results.length + ' results for "' + esc(term) + '"</div>' + results.map(function (r) {
+      if (!results.length) { box.innerHTML = '<div class="count">Sorry, we couldn\'t find any results for "' + esc(term) + '". Check the spelling or try something more general.</div>'; return; }
+      lastResults = results; shownCount = 0;
+      box.innerHTML = '<div class="count">' + results.length + ' results for "' + esc(term) + '"</div><div id="calcList"></div>' +
+        '<button class="btn btn-outline btn-sm" type="button" id="calcMore">Show more results</button>';
+      showMoreResults();
+    });
+    var lastResults = [], shownCount = 0;
+    function showMoreResults() {
+      var next = lastResults.slice(shownCount, shownCount + CALC_PAGE);
+      shownCount += next.length;
+      $('#calcList').insertAdjacentHTML('beforeend', next.map(function (r) {
         var x = r.p;
-        return '<div class="calc-item"><div class="thumb">' + art(x) + '</div><div><div class="t"><a href="product.html?id=' + x.id + '">' + esc(x.name) + '</a></div><div class="meta">' +
-          (r.sponsored ? '<span class="pill pill-spons">Sponsored</span>' : '') + '<span class="pill pill-grey">' + esc(x.packLabel || '') + '</span>' +
+        return '<div class="calc-item"><div class="thumb">' + art(x) + '</div><div><div class="t"><a href="product.html?id=' + x.id + '" title="' + esc(x.name) + '">' + esc(clip(x.name, 44)) + '</a></div><div class="meta">' +
+          (r.sponsored ? '<span class="pill pill-spons">Sponsored</span>' : '') +
           (x.stock ? '' : '<span class="pill pill-oos">Out of stock</span>') + stars(x) + '</div></div>' +
           '<div class="buy"><div class="p">' + money(x.price) + '</div><button class="btn btn-buy btn-sm" type="button" data-cadd="' + x.id + '"' + (x.stock ? '' : ' disabled') + '>' + (x.stock ? 'Add' : 'Unavailable') + '</button></div></div>';
-      }).join('');
-    });
+      }).join(''));
+      $('#calcMore').hidden = shownCount >= lastResults.length;
+      $('#calcMore').textContent = 'Show more results (' + shownCount + ' of ' + lastResults.length + ')';
+    }
     $('#calcResults').addEventListener('click', function (e) {
+      if (e.target.closest('#calcMore')) { showMoreResults(); return; }
       var b = e.target.closest('[data-cadd]'); if (!b) return;
       var x = byId(b.getAttribute('data-cadd'));
       addToBasket(x.id, 1, 'calculator_search'); showAdded(x, 1);

@@ -24,7 +24,16 @@ basket, login and wishlist state live in `localStorage`. Brand research is in [`
 1. Homepage → **Homepage Viewed**
 2. "Try it on paint" → product page → **Product Page Viewed**
 3. Open Project Calculator, enter 4.2 × 3.6 × 2.4, Calculate → **Project Calculator Started**
-4. Search "white matt emulsion" in the calculator → **Calculator Item Search** (friction: sponsored Dulux, tester pots and 1L tins first, then the out-of-stock 10L; the right 5L tin is near the bottom)
+4. Search "white matt emulsion 5L" in the calculator → **Calculator Item Search**. This is the friction. The search:
+   - knows nothing about the calculation, so the 5.8 litres just worked out is ignored
+   - searches the whole catalogue with loose keyword matching, so "white" returns Christmas lights, a microwave and a vanity unit, and "matt" returns tiles
+   - silently drops sizes, so "5L" alone returns nothing
+   - pins a sponsored Dulux tin first, then ranks by popularity
+   - shows 5 results at a time with names cut off and no pack size, so the Valspar 1L, 2.5L and 5L tins look the same
+   - puts the right tin (Valspar 5L) last: result 18 of 18, behind three "Show more results" clicks
+   - adds one tin per "Add", whatever quantity you need
+
+   In a replay you'll see repeated searches, "Show more" clicks and shoppers giving up or adding one wrong-size tin.
 5. Add something → **Add to Basket** (`source` = `calculator_search`, `calculator_recommendation`, `product_page`, `category`, `search`, …)
 6. Basket → Checkout → Place order → **Order Completed**
 

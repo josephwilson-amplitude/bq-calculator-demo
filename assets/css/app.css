@@ -212,7 +212,9 @@ main { min-height: 50vh; }
 .calc-search form { display: flex; border: 2px solid var(--charcoal); }
 .calc-search input { flex: 1; min-width: 0; border: 0; height: 48px; padding: 0 12px; font-size: 16px; outline: none; }
 .calc-search form button { border: 0; background: var(--charcoal); color: #fff; padding: 0 18px; font-weight: 700; cursor: pointer; }
-.calc-results { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; max-height: 520px; overflow: auto; }
+.calc-results { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+#calcList { display: flex; flex-direction: column; gap: 8px; }
+#calcMore { align-self: flex-start; }
 .calc-results .count { font-size: 13px; color: var(--grey); }
 .calc-item { display: grid; grid-template-columns: 64px 1fr auto; gap: 10px; align-items: center; border: 1px solid var(--border); padding: 8px; }
 .calc-item .thumb { width: 64px; height: 64px; background: #F6F6F6; padding: 4px; }
